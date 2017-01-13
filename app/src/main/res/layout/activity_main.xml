@@ -11,13 +11,22 @@
     tools:context="com.blacknebula.mousify.activities.MainActivity">
 
     <EditText
-        android:id="@+id/portEditText"
-        android:layout_width="wrap_content"
+        android:id="@+id/targetIpAddressEditText"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:ems="10"
-        android:hint="Select a port number"
+        android:hint="xxx.xxx.xxx.xxx"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/portEditText"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/targetIpAddressEditText"
+        android:ems="10"
+        android:hint="port"
         android:inputType="number" />
 
     <LinearLayout
@@ -42,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginStart="25dp"
-            android:text="Broadcast Address" />
+            android:text="Network Info" />
     </LinearLayout>
 
     <LinearLayout
@@ -56,6 +65,14 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/testingIpLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="17dp"
+                android:layout_weight="1"
+                android:hint="Currently tested"
+                android:text="" />
 
             <TextView
                 android:id="@+id/testingIpText"
@@ -63,7 +80,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="17dp"
                 android:layout_weight="1"
-                android:hint="Trying ip .."
+                android:layout_below="@id/testingIpLabel"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/detectedDevicesLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="17dp"
+                android:layout_weight="1"
+                android:layout_below="@id/testingIpText"
+                android:hint="Detected devices"
                 android:text="" />
 
             <TextView
@@ -72,8 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="17dp"
                 android:layout_weight="1"
-                android:layout_below="@id/testingIpText"
-                android:hint="Detected devices"
+                android:layout_below="@id/detectedDevicesLabel"
                 android:text="" />
 
         </LinearLayout>

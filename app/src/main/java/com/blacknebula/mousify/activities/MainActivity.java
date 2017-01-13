@@ -19,6 +19,7 @@ import com.blacknebula.mousify.dto.ConnectionInfo;
 import com.blacknebula.mousify.services.ScanNetIntentService;
 import com.blacknebula.mousify.util.Logger;
 import com.blacknebula.mousify.util.MousifyApplication;
+import com.google.common.base.Strings;
 
 import org.parceler.Parcels;
 
@@ -56,6 +57,9 @@ public class MainActivity extends Activity {
     @InjectView(R.id.portEditText)
     EditText portEditText;
 
+    @InjectView(R.id.targetIpAddressEditText)
+    EditText targetIpAddressEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +85,9 @@ public class MainActivity extends Activity {
                 case ScanNetIntentService.TRY_CODE:
                     handleTry(data);
                     break;
+                case ScanNetIntentService.END_CODE:
+                    handleEnd(data);
+                    break;
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -103,21 +110,23 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.scanButton)
     public void scanCode(View view) {
-        if (!portEditText.getFreezesText()) {
+        if (Strings.isNullOrEmpty(portEditText.getText().toString())) {
             portEditText.setText("80");
         }
         detectedDevicesText.setText("pending ...");
         final String portNumber = portEditText.getText().toString();
+        final String targetIpAddress = targetIpAddressEditText.getText().toString();
         final ConnectionInfo connectionInfo = getNetworkInfo();
         if (connectionInfo == null) {
             Toast.makeText(this, "Connection info cannot be null", Toast.LENGTH_SHORT).show();
             return;
         }
         final String subNet = retrieveSubNet(connectionInfo.getBroadcastAddress());
-        PendingIntent pendingResult = createPendingResult(SCAN_NET_REQUEST_CODE, new Intent(), 0);
-        Intent intent = new Intent(getApplicationContext(), ScanNetIntentService.class);
+        final PendingIntent pendingResult = createPendingResult(SCAN_NET_REQUEST_CODE, new Intent(), 0);
+        final Intent intent = new Intent(getApplicationContext(), ScanNetIntentService.class);
         intent.putExtra(ScanNetIntentService.URL_EXTRA, subNet);
         intent.putExtra(ScanNetIntentService.PORT_EXTRA, portNumber);
+        intent.putExtra(ScanNetIntentService.IP_EXTRA, targetIpAddress);
         intent.putExtra(ScanNetIntentService.PENDING_RESULT_EXTRA, pendingResult);
         startService(intent);
     }
@@ -129,6 +138,15 @@ public class MainActivity extends Activity {
         final Parcelable result = data.getParcelableExtra(ScanNetIntentService.HOSTS_EXTRA);
         final String host = Parcels.unwrap(result);
         final String value = detectedDevicesText.getText().toString().isEmpty() ? host : detectedDevicesText.getText() + "\n" + host;
+        detectedDevicesText.setText(value);
+    }
+
+    private void handleEnd(Intent data) {
+        if (detectedDevicesText.getText().toString().contains("pending")) {
+            detectedDevicesText.setText("");
+        }
+        final String finishedMessage = "Finished";
+        final String value = detectedDevicesText.getText().toString().isEmpty() ? finishedMessage : detectedDevicesText.getText() + "\n" + finishedMessage;
         detectedDevicesText.setText(value);
     }
 

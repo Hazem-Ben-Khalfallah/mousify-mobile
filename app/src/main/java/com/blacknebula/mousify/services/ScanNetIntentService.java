@@ -6,14 +6,13 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.blacknebula.mousify.util.Logger;
+import com.google.common.base.Strings;
 
 import org.parceler.Parcels;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ScanNetIntentService extends IntentService {
 
@@ -21,9 +20,11 @@ public class ScanNetIntentService extends IntentService {
     public static final String URL_EXTRA = "url";
     public static final String PENDING_RESULT_EXTRA = "pending_result";
     public static final String PORT_EXTRA = "port";
+    public static final String IP_EXTRA = "ip";
     public static final int RESULT_CODE = 0;
     public static final int TRY_CODE = 1;
     public static final int ERROR_CODE = 2;
+    public static final int END_CODE = 3;
     private static final String TAG = ScanNetIntentService.class.getSimpleName();
 
     public ScanNetIntentService() {
@@ -38,7 +39,8 @@ public class ScanNetIntentService extends IntentService {
             try {
                 final String url = intent.getStringExtra(URL_EXTRA);
                 final String port = intent.getStringExtra(PORT_EXTRA);
-                scanSubNet(url, port, reply);
+                final String targetIpAddress = intent.getStringExtra(IP_EXTRA);
+                scanSubNet(url, targetIpAddress, port, reply);
 
 
             } catch (Exception exc) {
@@ -62,27 +64,37 @@ public class ScanNetIntentService extends IntentService {
         replyIntent.send(this, TRY_CODE, result);
     }
 
-    private List<String> scanSubNet(String subnet, String port, PendingIntent reply) {
-        List<String> hosts = new ArrayList<>();
+    private void sendEnd(PendingIntent replyIntent) throws PendingIntent.CanceledException {
+        final Intent result = new Intent();
+        replyIntent.send(this, END_CODE, result);
+    }
 
+    private void scanSubNet(String subnet, String targetIpAddress, String port, PendingIntent reply) {
         try {
-            for (int i = 1; i <= 254; i++) {
-                final String address = subnet + "." + String.valueOf(i);
-                Logger.info(Logger.Type.MOUSIFY, "Trying: %s:%s", address, port);
-                sendTry(reply, String.format("%s:%s", address, port));
-
-                final DetectedHost detectedHost = isReachable(address, Integer.parseInt(port), 1000);
-                if (detectedHost.reached) {
-                    hosts.add(detectedHost.hostName);
-                    sendHosts(reply, detectedHost.hostName);
-                    Logger.info(Logger.Type.MOUSIFY, "Spotted: " + detectedHost.hostName);
+            if (!Strings.isNullOrEmpty(targetIpAddress)) {
+                verifyAddress(targetIpAddress, port, reply);
+            } else {
+                for (int i = 1; i <= 254; i++) {
+                    final String address = subnet + "." + String.valueOf(i);
+                    verifyAddress(address, port, reply);
                 }
             }
+            sendEnd(reply);
         } catch (Exception e) {
             Logger.error(Logger.Type.MOUSIFY, e);
         }
 
-        return hosts;
+    }
+
+    private void verifyAddress(String address, String port, PendingIntent reply) throws PendingIntent.CanceledException {
+        Logger.info(Logger.Type.MOUSIFY, "Trying: %s:%s", address, port);
+        sendTry(reply, String.format("%s:%s", address, port));
+
+        final DetectedHost detectedHost = isReachable(address, Integer.parseInt(port), 1000);
+        if (detectedHost.reached) {
+            sendHosts(reply, detectedHost.hostName);
+            Logger.info(Logger.Type.MOUSIFY, "Spotted: " + detectedHost.hostName);
+        }
     }
 
     private DetectedHost isReachable(String addr, int openPort, int timeOutMillis) {
