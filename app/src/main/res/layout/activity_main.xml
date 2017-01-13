@@ -52,14 +52,31 @@
         android:layout_marginTop="30dp"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/detectedDevicesText"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="17dp"
-            android:layout_weight="1"
-            android:hint="Detected devices"
-            android:text="" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/testingIpText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="17dp"
+                android:layout_weight="1"
+                android:hint="Trying ip .."
+                android:text="" />
+
+            <TextView
+                android:id="@+id/detectedDevicesText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="17dp"
+                android:layout_weight="1"
+                android:layout_below="@id/testingIpText"
+                android:hint="Detected devices"
+                android:text="" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/networkInfoText"

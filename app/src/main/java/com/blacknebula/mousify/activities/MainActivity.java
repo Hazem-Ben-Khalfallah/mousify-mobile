@@ -43,6 +43,10 @@ public class MainActivity extends Activity {
     @InjectView(R.id.scanButton)
     Button scanButton;
 
+    @InjectView(R.id.testingIpText)
+    TextView testingIpText;
+
+
     @InjectView(R.id.detectedDevicesText)
     TextView detectedDevicesText;
 
@@ -74,6 +78,9 @@ public class MainActivity extends Activity {
                 case ScanNetIntentService.RESULT_CODE:
                     handleSuccess(data);
                     break;
+                case ScanNetIntentService.TRY_CODE:
+                    handleTry(data);
+                    break;
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -99,6 +106,7 @@ public class MainActivity extends Activity {
         if (!portEditText.getFreezesText()) {
             portEditText.setText("80");
         }
+        detectedDevicesText.setText("pending ...");
         final String portNumber = portEditText.getText().toString();
         final ConnectionInfo connectionInfo = getNetworkInfo();
         if (connectionInfo == null) {
@@ -115,13 +123,23 @@ public class MainActivity extends Activity {
     }
 
     private void handleSuccess(Intent data) {
-        Parcelable result = data.getParcelableExtra(ScanNetIntentService.HOSTS_EXTRA);
-        List<String> hosts = Parcels.unwrap(result);
-        detectedDevicesText.setText(from(hosts));
+        if (detectedDevicesText.getText().toString().contains("pending")) {
+            detectedDevicesText.setText("");
+        }
+        final Parcelable result = data.getParcelableExtra(ScanNetIntentService.HOSTS_EXTRA);
+        final String host = Parcels.unwrap(result);
+        final String value = detectedDevicesText.getText().toString().isEmpty() ? host : detectedDevicesText.getText() + "\n" + host;
+        detectedDevicesText.setText(value);
     }
 
     private void handleError(Intent data) {
         Toast.makeText(this, "Error while scanning the net", Toast.LENGTH_SHORT).show();
+    }
+
+    private void handleTry(Intent data) {
+        final Parcelable result = data.getParcelableExtra(ScanNetIntentService.HOSTS_EXTRA);
+        final String host = Parcels.unwrap(result);
+        testingIpText.setText("Trying: " + host);
     }
 
 
@@ -148,7 +166,6 @@ public class MainActivity extends Activity {
             String ipAddress = wifiIpAddress(MousifyApplication.getAppContext());
             connectionInfo.setIpAddress(ipAddress);
             DhcpInfo dhcp = wifi.getDhcpInfo();
-            // handle null somehow
 
             int broadcast = (dhcp.ipAddress & dhcp.netmask) | ~dhcp.netmask;
             byte[] quads = new byte[4];
@@ -168,7 +185,7 @@ public class MainActivity extends Activity {
         WifiManager wifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
         int ipAddress = wifiManager.getConnectionInfo().getIpAddress();
 
-        // Convert little-endian to big-endianif needed
+        // Convert little-endian to big-endian if needed
         if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) {
             ipAddress = Integer.reverseBytes(ipAddress);
         }

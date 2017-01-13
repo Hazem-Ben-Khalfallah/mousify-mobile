@@ -22,6 +22,7 @@ public class ScanNetIntentService extends IntentService {
     public static final String PENDING_RESULT_EXTRA = "pending_result";
     public static final String PORT_EXTRA = "port";
     public static final int RESULT_CODE = 0;
+    public static final int TRY_CODE = 1;
     public static final int ERROR_CODE = 2;
     private static final String TAG = ScanNetIntentService.class.getSimpleName();
 
@@ -37,11 +38,8 @@ public class ScanNetIntentService extends IntentService {
             try {
                 final String url = intent.getStringExtra(URL_EXTRA);
                 final String port = intent.getStringExtra(PORT_EXTRA);
-                final List<String> hosts = scanSubNet(url, port);
-                final Intent result = new Intent();
-                result.putExtra(HOSTS_EXTRA, Parcels.wrap(hosts));
+                scanSubNet(url, port, reply);
 
-                reply.send(this, RESULT_CODE, result);
 
             } catch (Exception exc) {
                 // could do better by treating the different sax/xml exceptions individually
@@ -52,22 +50,36 @@ public class ScanNetIntentService extends IntentService {
         }
     }
 
-    private List<String> scanSubNet(String subnet, String port) {
+    private void sendHosts(PendingIntent replyIntent, String host) throws PendingIntent.CanceledException {
+        final Intent result = new Intent();
+        result.putExtra(HOSTS_EXTRA, Parcels.wrap(host));
+        replyIntent.send(this, RESULT_CODE, result);
+    }
+
+    private void sendTry(PendingIntent replyIntent, String host) throws PendingIntent.CanceledException {
+        final Intent result = new Intent();
+        result.putExtra(HOSTS_EXTRA, Parcels.wrap(host));
+        replyIntent.send(this, TRY_CODE, result);
+    }
+
+    private List<String> scanSubNet(String subnet, String port, PendingIntent reply) {
         List<String> hosts = new ArrayList<>();
 
+        try {
+            for (int i = 1; i <= 254; i++) {
+                final String address = subnet + "." + String.valueOf(i);
+                Logger.info(Logger.Type.MOUSIFY, "Trying: %s:%s", address, port);
+                sendTry(reply, String.format("%s:%s", address, port));
 
-        for (int i = 1; i <= 10; i++) {
-            final String address = subnet + "." + String.valueOf(i);
-            Logger.info(Logger.Type.MOUSIFY, "Trying: %s:%s", address, port);
-            try {
                 final DetectedHost detectedHost = isReachable(address, Integer.parseInt(port), 1000);
                 if (detectedHost.reached) {
                     hosts.add(detectedHost.hostName);
+                    sendHosts(reply, detectedHost.hostName);
                     Logger.info(Logger.Type.MOUSIFY, "Spotted: " + detectedHost.hostName);
                 }
-            } catch (Exception e) {
-                Logger.error(Logger.Type.MOUSIFY, e);
             }
+        } catch (Exception e) {
+            Logger.error(Logger.Type.MOUSIFY, e);
         }
 
         return hosts;
