@@ -10,7 +10,6 @@ import com.blacknebula.mousify.util.Logger;
 import org.parceler.Parcels;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ public class ScanNetIntentService extends IntentService {
     public static final String HOSTS_EXTRA = "hosts";
     public static final String URL_EXTRA = "url";
     public static final String PENDING_RESULT_EXTRA = "pending_result";
+    public static final String PORT_EXTRA = "port";
     public static final int RESULT_CODE = 0;
     public static final int ERROR_CODE = 2;
     private static final String TAG = ScanNetIntentService.class.getSimpleName();
@@ -36,7 +36,8 @@ public class ScanNetIntentService extends IntentService {
         try {
             try {
                 final String url = intent.getStringExtra(URL_EXTRA);
-                final List<String> hosts = scanSubNet(url);
+                final String port = intent.getStringExtra(PORT_EXTRA);
+                final List<String> hosts = scanSubNet(url, port);
                 final Intent result = new Intent();
                 result.putExtra(HOSTS_EXTRA, Parcels.wrap(hosts));
 
@@ -51,16 +52,15 @@ public class ScanNetIntentService extends IntentService {
         }
     }
 
-    private List<String> scanSubNet(String subnet) {
+    private List<String> scanSubNet(String subnet, String port) {
         List<String> hosts = new ArrayList<>();
 
 
         for (int i = 1; i <= 10; i++) {
             final String address = subnet + "." + String.valueOf(i);
-            final int port = 139;
             Logger.info(Logger.Type.MOUSIFY, "Trying: %s:%s", address, port);
             try {
-                final DetectedHost detectedHost = isReachable(address, port, 1000);
+                final DetectedHost detectedHost = isReachable(address, Integer.parseInt(port), 1000);
                 if (detectedHost.reached) {
                     hosts.add(detectedHost.hostName);
                     Logger.info(Logger.Type.MOUSIFY, "Spotted: " + detectedHost.hostName);
@@ -75,7 +75,7 @@ public class ScanNetIntentService extends IntentService {
 
     private DetectedHost isReachable(String addr, int openPort, int timeOutMillis) {
         // Any Open port on other machine
-        // openPort =  80 Linus / 139 windows
+        // openPort =  80 Linux / 139 windows
         try {
             try (Socket soc = new Socket()) {
                 soc.connect(new InetSocketAddress(addr, openPort), timeOutMillis);
