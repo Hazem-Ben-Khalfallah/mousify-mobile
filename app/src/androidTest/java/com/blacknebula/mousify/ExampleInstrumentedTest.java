@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.hazem.myapplication", appContext.getPackageName());
+        assertEquals("com.blacknebula.mousify", appContext.getPackageName());
     }
 }
