@@ -20,8 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service
-            android:name=".services.ScanNetIntentService"
+        <service android:name=".services.ScanNetIntentService"
+            android:exported="false"/>
+        <service android:name=".services.RemoteMousifyIntentService"
             android:exported="false"/>
     </application>
 

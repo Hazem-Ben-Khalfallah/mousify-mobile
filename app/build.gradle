@@ -32,4 +32,14 @@ dependencies {
     testCompile 'junit:junit:4.12'
     //parceler
     compile 'org.parceler:parceler-api:1.1.6'
+    // kryonet
+    compile 'kryonet:kryonet:2.21'
+    compile 'com.esotericsoftware:kryo:4.0.0'
+
+}
+
+repositories {
+    maven {
+        url "http://clojars.org/repo"
+    }
 }

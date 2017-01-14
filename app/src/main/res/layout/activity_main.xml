@@ -30,7 +30,7 @@
         android:inputType="number" />
 
     <LinearLayout
-        android:id="@+id/actions"
+        android:id="@+id/test_actions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/portEditText"
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:text="Scan network" />
+            android:text="Scan" />
 
 
         <Button
@@ -50,14 +50,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="25dp"
-            android:text="Network Info" />
+            android:layout_marginStart="1dp"
+            android:text="Info" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/connect_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/test_actions"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/connectButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="1dp"
+            android:text="Connect" />
+
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="1dp"
+            android:text="Send" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/actions"
+        android:layout_below="@id/connect_actions"
         android:layout_marginTop="30dp"
         android:orientation="horizontal">
 

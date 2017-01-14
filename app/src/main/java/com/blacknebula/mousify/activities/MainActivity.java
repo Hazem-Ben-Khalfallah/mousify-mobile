@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.blacknebula.mousify.R;
 import com.blacknebula.mousify.dto.ConnectionInfo;
+import com.blacknebula.mousify.services.RemoteMousifyIntentService;
 import com.blacknebula.mousify.services.ScanNetIntentService;
 import com.blacknebula.mousify.util.Logger;
 import com.blacknebula.mousify.util.MousifyApplication;
@@ -27,7 +28,6 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteOrder;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -43,6 +43,12 @@ public class MainActivity extends Activity {
 
     @InjectView(R.id.scanButton)
     Button scanButton;
+
+    @InjectView(R.id.connectButton)
+    Button connectButton;
+
+    @InjectView(R.id.sendButton)
+    Button sendButton;
 
     @InjectView(R.id.testingIpText)
     TextView testingIpText;
@@ -131,6 +137,35 @@ public class MainActivity extends Activity {
         startService(intent);
     }
 
+    @OnClick(R.id.connectButton)
+    public void connect(View view) {
+        if (Strings.isNullOrEmpty(portEditText.getText().toString())) {
+            Toast.makeText(this, "Should set Port", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (Strings.isNullOrEmpty(targetIpAddressEditText.getText().toString())) {
+            Toast.makeText(this, "Should set ip address", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final int port = Integer.parseInt(portEditText.getText().toString());
+        final String ip = targetIpAddressEditText.getText().toString();
+
+        final Intent intent = new Intent(getApplicationContext(), RemoteMousifyIntentService.class);
+        intent.putExtra(RemoteMousifyIntentService.ACTION_EXTRA, RemoteMousifyIntentService.ACTION_CONNECT);
+        intent.putExtra(RemoteMousifyIntentService.PORT_EXTRA, port);
+        intent.putExtra(RemoteMousifyIntentService.IP_EXTRA, ip);
+        startService(intent);
+    }
+
+    @OnClick(R.id.sendButton)
+    public void send(View view) {
+        final Intent intent = new Intent();
+        intent.setAction(RemoteMousifyIntentService.SEND_ACTION);
+        intent.putExtra(RemoteMousifyIntentService.MESSAGE_EXTRA, "Hello world!");
+        sendBroadcast(intent);
+    }
+
     private void handleSuccess(Intent data) {
         if (detectedDevicesText.getText().toString().contains("pending")) {
             detectedDevicesText.setText("");
@@ -163,17 +198,6 @@ public class MainActivity extends Activity {
 
     private String retrieveSubNet(String hostAddress) {
         return hostAddress.substring(0, hostAddress.lastIndexOf("."));
-    }
-
-    private String from(List<String> data) {
-        if (data.isEmpty()) {
-            return "no host found";
-        }
-        final StringBuilder stringBuilder = new StringBuilder();
-        for (String s : data) {
-            stringBuilder.append(s).append("\n");
-        }
-        return stringBuilder.toString();
     }
 
     private ConnectionInfo getNetworkInfo() {
