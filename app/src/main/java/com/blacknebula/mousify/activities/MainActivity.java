@@ -152,7 +152,7 @@ public class MainActivity extends Activity {
         final String ip = targetIpAddressEditText.getText().toString();
 
         final Intent intent = new Intent(getApplicationContext(), RemoteMousifyIntentService.class);
-        intent.putExtra(RemoteMousifyIntentService.ACTION_EXTRA, RemoteMousifyIntentService.ACTION_CONNECT);
+        intent.setAction(RemoteMousifyIntentService.CONNECT_ACTION);
         intent.putExtra(RemoteMousifyIntentService.PORT_EXTRA, port);
         intent.putExtra(RemoteMousifyIntentService.IP_EXTRA, ip);
         startService(intent);
@@ -160,10 +160,10 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.sendButton)
     public void send(View view) {
-        final Intent intent = new Intent();
+        final Intent intent = new Intent(getApplicationContext(), RemoteMousifyIntentService.class);
         intent.setAction(RemoteMousifyIntentService.SEND_ACTION);
         intent.putExtra(RemoteMousifyIntentService.MESSAGE_EXTRA, "Hello world!");
-        sendBroadcast(intent);
+        startService(intent);
     }
 
     private void handleSuccess(Intent data) {
