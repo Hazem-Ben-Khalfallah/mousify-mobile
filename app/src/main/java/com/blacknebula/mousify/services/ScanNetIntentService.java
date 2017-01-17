@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.util.Log;
 
+import com.blacknebula.mousify.BuildConfig;
 import com.blacknebula.mousify.util.Logger;
 import com.google.common.base.Strings;
 
@@ -38,9 +39,8 @@ public class ScanNetIntentService extends IntentService {
         try {
             try {
                 final String url = intent.getStringExtra(URL_EXTRA);
-                final String port = intent.getStringExtra(PORT_EXTRA);
                 final String targetIpAddress = intent.getStringExtra(IP_EXTRA);
-                scanSubNet(url, targetIpAddress, port, reply);
+                scanSubNet(url, targetIpAddress, reply);
 
 
             } catch (Exception exc) {
@@ -69,14 +69,14 @@ public class ScanNetIntentService extends IntentService {
         replyIntent.send(this, END_CODE, result);
     }
 
-    private void scanSubNet(String subnet, String targetIpAddress, String port, PendingIntent reply) {
+    private void scanSubNet(String subnet, String targetIpAddress, PendingIntent reply) {
         try {
             if (!Strings.isNullOrEmpty(targetIpAddress)) {
-                verifyAddress(targetIpAddress, port, reply);
+                verifyAddress(targetIpAddress, reply);
             } else {
                 for (int i = 1; i <= 254; i++) {
                     final String address = subnet + "." + String.valueOf(i);
-                    verifyAddress(address, port, reply);
+                    verifyAddress(address, reply);
                 }
             }
             sendEnd(reply);
@@ -86,11 +86,12 @@ public class ScanNetIntentService extends IntentService {
 
     }
 
-    private void verifyAddress(String address, String port, PendingIntent reply) throws PendingIntent.CanceledException {
+    private void verifyAddress(String address, PendingIntent reply) throws PendingIntent.CanceledException {
+        final int port = BuildConfig.TCP_PORT;
         Logger.info(Logger.Type.MOUSIFY, "Trying: %s:%s", address, port);
         sendTry(reply, String.format("%s:%s", address, port));
 
-        final DetectedHost detectedHost = isReachable(address, Integer.parseInt(port), 1000);
+        final DetectedHost detectedHost = isReachable(address, port, 1000);
         if (detectedHost.reached) {
             sendHosts(reply, detectedHost.hostName);
             Logger.info(Logger.Type.MOUSIFY, "Spotted: " + detectedHost.hostName);

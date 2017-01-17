@@ -9,7 +9,7 @@ public class Logger {
     final static private String NAME = "com.blacknebula.mousify";
 
     public enum Type {
-        MOUSIFY;
+        MOUSIFY, KRYONET;
 
         @Override
         public String toString() {

@@ -37,6 +37,7 @@ import butterknife.OnClick;
 public class MainActivity extends Activity {
 
     private static final int SCAN_NET_REQUEST_CODE = 0;
+    private static final int DISCOVER_REQUEST_CODE = 1;
 
     @InjectView(R.id.networkInfoButton)
     Button networkInfoButton;
@@ -46,6 +47,12 @@ public class MainActivity extends Activity {
 
     @InjectView(R.id.connectButton)
     Button connectButton;
+
+    @InjectView(R.id.disconnectButton)
+    Button disconnectButton;
+
+    @InjectView(R.id.discoverButton)
+    Button discoverButton;
 
     @InjectView(R.id.sendButton)
     Button sendButton;
@@ -59,9 +66,6 @@ public class MainActivity extends Activity {
 
     @InjectView(R.id.networkInfoText)
     TextView networkInfoText;
-
-    @InjectView(R.id.portEditText)
-    EditText portEditText;
 
     @InjectView(R.id.targetIpAddressEditText)
     EditText targetIpAddressEditText;
@@ -81,6 +85,21 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SCAN_NET_REQUEST_CODE) {
+            switch (resultCode) {
+                case ScanNetIntentService.ERROR_CODE:
+                    handleError(data);
+                    break;
+                case ScanNetIntentService.RESULT_CODE:
+                    handleSuccess(data);
+                    break;
+                case ScanNetIntentService.TRY_CODE:
+                    handleTry(data);
+                    break;
+                case ScanNetIntentService.END_CODE:
+                    handleEnd(data);
+                    break;
+            }
+        } else if (requestCode == DISCOVER_REQUEST_CODE) {
             switch (resultCode) {
                 case ScanNetIntentService.ERROR_CODE:
                     handleError(data);
@@ -116,11 +135,7 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.scanButton)
     public void scanCode(View view) {
-        if (Strings.isNullOrEmpty(portEditText.getText().toString())) {
-            portEditText.setText("80");
-        }
         detectedDevicesText.setText("pending ...");
-        final String portNumber = portEditText.getText().toString();
         final String targetIpAddress = targetIpAddressEditText.getText().toString();
         final ConnectionInfo connectionInfo = getNetworkInfo();
         if (connectionInfo == null) {
@@ -131,30 +146,41 @@ public class MainActivity extends Activity {
         final PendingIntent pendingResult = createPendingResult(SCAN_NET_REQUEST_CODE, new Intent(), 0);
         final Intent intent = new Intent(getApplicationContext(), ScanNetIntentService.class);
         intent.putExtra(ScanNetIntentService.URL_EXTRA, subNet);
-        intent.putExtra(ScanNetIntentService.PORT_EXTRA, portNumber);
         intent.putExtra(ScanNetIntentService.IP_EXTRA, targetIpAddress);
+        intent.putExtra(ScanNetIntentService.PENDING_RESULT_EXTRA, pendingResult);
+        startService(intent);
+    }
+
+    @OnClick(R.id.discoverButton)
+    public void discover(View view) {
+        detectedDevicesText.setText("pending ...");
+        final PendingIntent pendingResult = createPendingResult(DISCOVER_REQUEST_CODE, new Intent(), 0);
+
+        final Intent intent = new Intent(getApplicationContext(), RemoteMousifyIntentService.class);
+        intent.setAction(RemoteMousifyIntentService.DISCOVER_ACTION);
         intent.putExtra(ScanNetIntentService.PENDING_RESULT_EXTRA, pendingResult);
         startService(intent);
     }
 
     @OnClick(R.id.connectButton)
     public void connect(View view) {
-        if (Strings.isNullOrEmpty(portEditText.getText().toString())) {
-            Toast.makeText(this, "Should set Port", Toast.LENGTH_SHORT).show();
-            return;
-        }
         if (Strings.isNullOrEmpty(targetIpAddressEditText.getText().toString())) {
             Toast.makeText(this, "Should set ip address", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        final int port = Integer.parseInt(portEditText.getText().toString());
         final String ip = targetIpAddressEditText.getText().toString();
 
         final Intent intent = new Intent(getApplicationContext(), RemoteMousifyIntentService.class);
         intent.setAction(RemoteMousifyIntentService.CONNECT_ACTION);
-        intent.putExtra(RemoteMousifyIntentService.PORT_EXTRA, port);
         intent.putExtra(RemoteMousifyIntentService.IP_EXTRA, ip);
+        startService(intent);
+    }
+
+    @OnClick(R.id.disconnectButton)
+    public void disconnect(View view) {
+        final Intent intent = new Intent(getApplicationContext(), RemoteMousifyIntentService.class);
+        intent.setAction(RemoteMousifyIntentService.DISCONNECT_ACTION);
         startService(intent);
     }
 
