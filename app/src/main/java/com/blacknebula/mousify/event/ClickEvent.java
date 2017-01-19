@@ -8,14 +8,14 @@ import org.parceler.ParcelConstructor;
  */
 @Parcel
 public class ClickEvent {
-    boolean isDoubleClick;
+    boolean isLeft;
 
     public ClickEvent() {
     }
 
     @ParcelConstructor
-    public ClickEvent(boolean isDoubleClick) {
-        this.isDoubleClick = isDoubleClick;
+    public ClickEvent(boolean isLeft) {
+        this.isLeft = isLeft;
     }
 
 }
