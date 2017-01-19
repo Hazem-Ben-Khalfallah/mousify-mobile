@@ -1,4 +1,4 @@
-package com.blacknebula.mousify.dto;
+package com.blacknebula.mousify.event;
 
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
@@ -7,29 +7,29 @@ import org.parceler.ParcelConstructor;
  * @author hazem
  */
 @Parcel
-public class MotionRequest {
+public class MotionEvent {
     int dx;
     int dy;
 
-    public MotionRequest() {
+    public MotionEvent() {
     }
 
     @ParcelConstructor
-    public MotionRequest(int dx, int dy) {
+    public MotionEvent(int dx, int dy) {
         this.dx = dx;
         this.dy = dy;
     }
 
-    public static MotionRequest builder() {
-        return new MotionRequest();
+    public static MotionEvent builder() {
+        return new MotionEvent();
     }
 
-    public MotionRequest withDx(float dx) {
+    public MotionEvent withDx(float dx) {
         this.dx = Math.round(dx);
         return this;
     }
 
-    public MotionRequest withDy(float dy) {
+    public MotionEvent withDy(float dy) {
         this.dy = Math.round(dy);
         return this;
     }

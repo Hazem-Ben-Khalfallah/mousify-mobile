@@ -8,7 +8,8 @@ import android.os.Parcelable;
 import com.blacknebula.mousify.BuildConfig;
 import com.blacknebula.mousify.MousifyApplication;
 import com.blacknebula.mousify.dto.MotionHistory;
-import com.blacknebula.mousify.dto.MotionRequest;
+import com.blacknebula.mousify.event.ClickEvent;
+import com.blacknebula.mousify.event.MotionEvent;
 import com.blacknebula.mousify.util.Logger;
 import com.blacknebula.mousify.util.ViewUtils;
 import com.esotericsoftware.kryo.Kryo;
@@ -30,8 +31,10 @@ public class RemoteMousifyIntentService extends IntentService {
     public static final String DISCOVER_ACTION = "discover";
     public static final String CONNECT_ACTION = "connect";
     public static final String DISCONNECT_ACTION = "disconnect";
-    public static final String SEND_ACTION = "send";
-    public static final String COORDINATES_EXTRA = "coordinates";
+    public static final String SEND_MOTION_ACTION = "sendMotion";
+    public static final String SEND_CLICK_ACTION = "sendClick";
+    public static final String MOTION_EXTRA = "motion";
+    public static final String CLICK_EXTRA = "click";
     private static final String TAG = RemoteMousifyIntentService.class.getSimpleName();
 
     public static Client client;
@@ -52,10 +55,14 @@ public class RemoteMousifyIntentService extends IntentService {
             if (CONNECT_ACTION.equals(action)) {
                 final String ip = intent.getStringExtra(IP_EXTRA);
                 connect(ip);
-            } else if (SEND_ACTION.equals(action)) {
-                final Parcelable parcelable = intent.getParcelableExtra(COORDINATES_EXTRA);
-                final MotionRequest motionRequest = Parcels.unwrap(parcelable);
-                send(motionRequest);
+            } else if (SEND_MOTION_ACTION.equals(action)) {
+                final Parcelable parcelable = intent.getParcelableExtra(MOTION_EXTRA);
+                final MotionEvent motionEvent = Parcels.unwrap(parcelable);
+                sendMotion(motionEvent);
+            } else if (SEND_CLICK_ACTION.equals(action)) {
+                final Parcelable parcelable = intent.getParcelableExtra(CLICK_EXTRA);
+                final ClickEvent clickEvent = Parcels.unwrap(parcelable);
+                sendClick(clickEvent);
             } else if (DISCONNECT_ACTION.equals(action)) {
                 disconnect();
             } else if (DISCOVER_ACTION.equals(action)) {
@@ -106,7 +113,8 @@ public class RemoteMousifyIntentService extends IntentService {
             }
             if (!client.isConnected()) {
                 final Kryo kryo = client.getKryo();
-                kryo.register(MotionRequest.class);
+                kryo.register(MotionEvent.class);
+                kryo.register(ClickEvent.class);
                 client.start();
                 client.connect(5000, InetAddress.getByName(ip), BuildConfig.TCP_PORT, BuildConfig.UDP_PORT);
                 ViewUtils.showToast(MousifyApplication.getAppContext(), "connected to " + ip);
@@ -119,12 +127,12 @@ public class RemoteMousifyIntentService extends IntentService {
         }
     }
 
-    private void send(MotionRequest motionRequest) throws IOException {
-        if (MotionHistory.shouldIgnoreMove(motionRequest.getDx(), motionRequest.getDy())) {
-            Logger.warn(Logger.Type.MOUSIFY, "Ignore %s, %s", motionRequest.getDx(), motionRequest.getDy());
+    private void sendMotion(MotionEvent motionEvent) throws IOException {
+        if (MotionHistory.shouldIgnoreMove(motionEvent.getDx(), motionEvent.getDy())) {
+            Logger.warn(Logger.Type.MOUSIFY, "Ignore %s, %s", motionEvent.getDx(), motionEvent.getDy());
             return;
         }
-        Logger.info(Logger.Type.MOUSIFY, "----> sending %s, %s", motionRequest.getDx(), motionRequest.getDy());
+        Logger.info(Logger.Type.MOUSIFY, "----> sending %s, %s", motionEvent.getDx(), motionEvent.getDy());
 
         if (client == null) {
             ViewUtils.showToast(MousifyApplication.getAppContext(), "client should not be null");
@@ -134,10 +142,23 @@ public class RemoteMousifyIntentService extends IntentService {
         if (!client.isConnected()) {
             client.reconnect();
         }
-        client.sendTCP(motionRequest);
+        client.sendTCP(motionEvent);
 
         //update history
         MotionHistory.getInstance().resetStartToCurrentPosition();
+    }
+
+    private void sendClick(ClickEvent clickEvent) throws IOException {
+        if (client == null) {
+            ViewUtils.showToast(MousifyApplication.getAppContext(), "client should not be null");
+            return;
+        }
+
+        if (!client.isConnected()) {
+            client.reconnect();
+        }
+        client.sendTCP(clickEvent);
+
     }
 
 }

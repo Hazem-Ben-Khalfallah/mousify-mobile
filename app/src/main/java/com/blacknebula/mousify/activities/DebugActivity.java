@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.blacknebula.mousify.MousifyApplication;
 import com.blacknebula.mousify.R;
 import com.blacknebula.mousify.dto.ConnectionInfo;
-import com.blacknebula.mousify.dto.MotionRequest;
+import com.blacknebula.mousify.event.MotionEvent;
 import com.blacknebula.mousify.services.RemoteMousifyIntentService;
 import com.blacknebula.mousify.services.ScanNetIntentService;
 import com.blacknebula.mousify.util.Logger;
@@ -197,9 +197,9 @@ public class DebugActivity extends Activity {
     @OnClick(R.id.sendButton)
     public void send(View view) {
         final Intent intent = new Intent(this, RemoteMousifyIntentService.class);
-        intent.setAction(RemoteMousifyIntentService.SEND_ACTION);
-        Parcelable parcelable = Parcels.wrap(new MotionRequest(30, 30));
-        intent.putExtra(RemoteMousifyIntentService.COORDINATES_EXTRA, parcelable);
+        intent.setAction(RemoteMousifyIntentService.SEND_MOTION_ACTION);
+        Parcelable parcelable = Parcels.wrap(new MotionEvent(30, 30));
+        intent.putExtra(RemoteMousifyIntentService.MOTION_EXTRA, parcelable);
         startService(intent);
     }
 

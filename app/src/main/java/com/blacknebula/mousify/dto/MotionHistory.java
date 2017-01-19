@@ -6,14 +6,18 @@ package com.blacknebula.mousify.dto;
  */
 
 public class MotionHistory {
-    private static final int Y_THRESHOLD = 20;
-    private static final int X_THRESHOLD = 20;
+    private static final int Y_THRESHOLD = 10;
+    private static final int X_THRESHOLD = 10;
 
     private static MotionHistory motionHistory;
     private int startX;
     private int startY;
     private int currentY;
     private int currentX;
+    private int downX;
+    private int downY;
+    private int upX;
+    private int upY;
 
     private MotionHistory() {
     }
@@ -23,6 +27,21 @@ public class MotionHistory {
             motionHistory = new MotionHistory();
         }
         return motionHistory;
+    }
+
+    public static boolean shouldIgnoreMove(int dx, int dy) {
+        return Math.abs(dx) < X_THRESHOLD && Math.abs(dy) < Y_THRESHOLD;
+    }
+
+    public void updateDownCoordinates(float x, float y) {
+        this.downX = Math.round(x);
+        this.downY = Math.round(y);
+        updateStartCoordinates(x, y);
+    }
+
+    public void updateUpCoordinates(float x, float y) {
+        this.upX = Math.round(x);
+        this.upY = Math.round(y);
     }
 
     public void updateStartCoordinates(float x, float y) {
@@ -40,10 +59,6 @@ public class MotionHistory {
         this.startY = this.currentY;
     }
 
-    public static boolean shouldIgnoreMove(int dx, int dy) {
-        return Math.abs(dx) < X_THRESHOLD && Math.abs(dy) < Y_THRESHOLD;
-    }
-
     public int getStartX() {
         return startX;
     }
@@ -58,5 +73,25 @@ public class MotionHistory {
 
     public int getCurrentX() {
         return currentX;
+    }
+
+    public int getDownX() {
+        return downX;
+    }
+
+    public int getDownY() {
+        return downY;
+    }
+
+    public int getUpX() {
+        return upX;
+    }
+
+    public int getUpY() {
+        return upY;
+    }
+
+    public boolean isClickEvent() {
+        return shouldIgnoreMove(downX - upX, downY - upY);
     }
 }

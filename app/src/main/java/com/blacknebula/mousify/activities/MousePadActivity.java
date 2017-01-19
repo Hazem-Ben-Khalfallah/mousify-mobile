@@ -4,13 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.blacknebula.mousify.R;
 import com.blacknebula.mousify.dto.MotionHistory;
-import com.blacknebula.mousify.dto.MotionRequest;
+import com.blacknebula.mousify.event.ClickEvent;
+import com.blacknebula.mousify.event.MotionEvent;
 import com.blacknebula.mousify.services.RemoteMousifyIntentService;
 
 import org.parceler.Parcels;
@@ -32,33 +32,50 @@ public class MousePadActivity extends AppCompatActivity implements View.OnTouchL
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+    public boolean onTouch(View v, android.view.MotionEvent event) {
+        if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
             float x = event.getRawX();
             float y = event.getRawY();
-            MotionHistory.getInstance().updateStartCoordinates(x, y);
-        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            final MotionRequest motionRequest = getDistance(MotionHistory.getInstance().getStartX(), MotionHistory.getInstance().getStartY(), event);
+            MotionHistory.getInstance().updateDownCoordinates(x, y);
+        } else if (event.getAction() == android.view.MotionEvent.ACTION_MOVE) {
+            final MotionEvent motionEvent = getDistance(MotionHistory.getInstance().getStartX(), MotionHistory.getInstance().getStartY(), event);
             MotionHistory.getInstance().updateCurrentCoordinates(event.getRawX(), event.getRawY());
-            send(motionRequest);
+            sendMotion(motionEvent);
+        } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+            float x = event.getRawX();
+            float y = event.getRawY();
+            MotionHistory.getInstance().updateUpCoordinates(x, y);
+            if (MotionHistory.getInstance().isClickEvent()) {
+                final ClickEvent clickEvent = new ClickEvent();
+                sendClick(clickEvent);
+            }
+
         }
         return true;
     }
 
-    MotionRequest getDistance(float startX, float startY, MotionEvent ev) {
+    private MotionEvent getDistance(float startX, float startY, android.view.MotionEvent ev) {
         // add distance from last historical point to event's point
         float dx = ev.getRawX() - startX;
         float dy = ev.getRawY() - startY;
-        return MotionRequest.builder()
+        return MotionEvent.builder()
                 .withDx(dx)
                 .withDy(dy);
     }
 
-    private void send(MotionRequest motionRequest) {
+    private void sendMotion(MotionEvent motionEvent) {
         final Intent intent = new Intent(this, RemoteMousifyIntentService.class);
-        intent.setAction(RemoteMousifyIntentService.SEND_ACTION);
-        Parcelable parcelable = Parcels.wrap(motionRequest);
-        intent.putExtra(RemoteMousifyIntentService.COORDINATES_EXTRA, parcelable);
+        intent.setAction(RemoteMousifyIntentService.SEND_MOTION_ACTION);
+        Parcelable parcelable = Parcels.wrap(motionEvent);
+        intent.putExtra(RemoteMousifyIntentService.MOTION_EXTRA, parcelable);
+        startService(intent);
+    }
+
+    private void sendClick(ClickEvent clickEvent) {
+        final Intent intent = new Intent(this, RemoteMousifyIntentService.class);
+        intent.setAction(RemoteMousifyIntentService.SEND_CLICK_ACTION);
+        Parcelable parcelable = Parcels.wrap(clickEvent);
+        intent.putExtra(RemoteMousifyIntentService.CLICK_EXTRA, parcelable);
         startService(intent);
     }
 }
