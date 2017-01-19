@@ -9,9 +9,11 @@ public class MotionHistory {
     private static final int Y_THRESHOLD = 20;
     private static final int X_THRESHOLD = 20;
 
-    public static MotionHistory motionHistory;
-    private int previousX;
-    private int previousY;
+    private static MotionHistory motionHistory;
+    private int startX;
+    private int startY;
+    private int currentY;
+    private int currentX;
 
     private MotionHistory() {
     }
@@ -23,13 +25,38 @@ public class MotionHistory {
         return motionHistory;
     }
 
-    public void updateHistory(int x, int y) {
-        this.previousX = x;
-        this.previousY = y;
+    public void updateStartCoordinates(float x, float y) {
+        this.startX = Math.round(x);
+        this.startY = Math.round(y);
     }
 
-    public boolean shouldIgnoreMove(MotionRequest motionRequest) {
-        return Math.abs(motionRequest.getX() - previousX) < X_THRESHOLD ||
-                Math.abs(motionRequest.getY() - previousY) < Y_THRESHOLD;
+    public void updateCurrentCoordinates(float x, float y) {
+        this.currentX = Math.round(x);
+        this.currentY = Math.round(y);
+    }
+
+    public void resetStartToCurrentPosition() {
+        this.startX = this.currentX;
+        this.startY = this.currentY;
+    }
+
+    public static boolean shouldIgnoreMove(int dx, int dy) {
+        return Math.abs(dx) < X_THRESHOLD && Math.abs(dy) < Y_THRESHOLD;
+    }
+
+    public int getStartX() {
+        return startX;
+    }
+
+    public int getStartY() {
+        return startY;
+    }
+
+    public int getCurrentY() {
+        return currentY;
+    }
+
+    public int getCurrentX() {
+        return currentX;
     }
 }

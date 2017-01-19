@@ -198,7 +198,7 @@ public class DebugActivity extends Activity {
     public void send(View view) {
         final Intent intent = new Intent(this, RemoteMousifyIntentService.class);
         intent.setAction(RemoteMousifyIntentService.SEND_ACTION);
-        Parcelable parcelable = Parcels.wrap(new MotionRequest(10, 10));
+        Parcelable parcelable = Parcels.wrap(new MotionRequest(30, 30));
         intent.putExtra(RemoteMousifyIntentService.COORDINATES_EXTRA, parcelable);
         startService(intent);
     }

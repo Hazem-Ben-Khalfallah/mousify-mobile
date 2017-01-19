@@ -120,10 +120,11 @@ public class RemoteMousifyIntentService extends IntentService {
     }
 
     private void send(MotionRequest motionRequest) throws IOException {
-        if (MotionHistory.getInstance().shouldIgnoreMove(motionRequest)) {
+        if (MotionHistory.shouldIgnoreMove(motionRequest.getDx(), motionRequest.getDy())) {
+            Logger.warn(Logger.Type.MOUSIFY, "Ignore %s, %s", motionRequest.getDx(), motionRequest.getDy());
             return;
         }
-        MotionHistory.getInstance().updateHistory(motionRequest.getX(), motionRequest.getY());
+        Logger.info(Logger.Type.MOUSIFY, "----> sending %s, %s", motionRequest.getDx(), motionRequest.getDy());
 
         if (client == null) {
             ViewUtils.showToast(MousifyApplication.getAppContext(), "client should not be null");
@@ -134,6 +135,9 @@ public class RemoteMousifyIntentService extends IntentService {
             client.reconnect();
         }
         client.sendTCP(motionRequest);
+
+        //update history
+        MotionHistory.getInstance().resetStartToCurrentPosition();
     }
 
 }

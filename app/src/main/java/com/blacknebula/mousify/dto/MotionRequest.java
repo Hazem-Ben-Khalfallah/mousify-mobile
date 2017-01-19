@@ -8,28 +8,46 @@ import org.parceler.ParcelConstructor;
  */
 @Parcel
 public class MotionRequest {
-    int x;
-    int y;
+    int dx;
+    int dy;
+
+    public MotionRequest() {
+    }
 
     @ParcelConstructor
-    public MotionRequest(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public MotionRequest(int dx, int dy) {
+        this.dx = dx;
+        this.dy = dy;
     }
 
-    public int getX() {
-        return x;
+    public static MotionRequest builder() {
+        return new MotionRequest();
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public MotionRequest withDx(float dx) {
+        this.dx = Math.round(dx);
+        return this;
     }
 
-    public int getY() {
-        return y;
+    public MotionRequest withDy(float dy) {
+        this.dy = Math.round(dy);
+        return this;
     }
 
-    public void setY(int y) {
-        this.y = y;
+
+    public int getDx() {
+        return dx;
+    }
+
+    public void setDx(int dx) {
+        this.dx = dx;
+    }
+
+    public int getDy() {
+        return dy;
+    }
+
+    public void setDy(int dy) {
+        this.dy = dy;
     }
 }

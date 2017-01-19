@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.blacknebula.mousify.R;
+import com.blacknebula.mousify.dto.MotionHistory;
 import com.blacknebula.mousify.dto.MotionRequest;
 import com.blacknebula.mousify.services.RemoteMousifyIntentService;
 
@@ -32,19 +33,31 @@ public class MousePadActivity extends AppCompatActivity implements View.OnTouchL
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_MOVE) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             float x = event.getRawX();
             float y = event.getRawY();
-            //  Code to display x and y go here
-            send(x, y);
+            MotionHistory.getInstance().updateStartCoordinates(x, y);
+        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            final MotionRequest motionRequest = getDistance(MotionHistory.getInstance().getStartX(), MotionHistory.getInstance().getStartY(), event);
+            MotionHistory.getInstance().updateCurrentCoordinates(event.getRawX(), event.getRawY());
+            send(motionRequest);
         }
         return true;
     }
 
-    private void send(float x, float y) {
+    MotionRequest getDistance(float startX, float startY, MotionEvent ev) {
+        // add distance from last historical point to event's point
+        float dx = ev.getRawX() - startX;
+        float dy = ev.getRawY() - startY;
+        return MotionRequest.builder()
+                .withDx(dx)
+                .withDy(dy);
+    }
+
+    private void send(MotionRequest motionRequest) {
         final Intent intent = new Intent(this, RemoteMousifyIntentService.class);
         intent.setAction(RemoteMousifyIntentService.SEND_ACTION);
-        Parcelable parcelable = Parcels.wrap(new MotionRequest(Math.round(x), Math.round(y)));
+        Parcelable parcelable = Parcels.wrap(motionRequest);
         intent.putExtra(RemoteMousifyIntentService.COORDINATES_EXTRA, parcelable);
         startService(intent);
     }
