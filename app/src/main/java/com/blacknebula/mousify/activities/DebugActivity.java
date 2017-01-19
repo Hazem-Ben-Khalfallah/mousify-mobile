@@ -14,12 +14,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blacknebula.mousify.MousifyApplication;
 import com.blacknebula.mousify.R;
 import com.blacknebula.mousify.dto.ConnectionInfo;
+import com.blacknebula.mousify.dto.MotionRequest;
 import com.blacknebula.mousify.services.RemoteMousifyIntentService;
 import com.blacknebula.mousify.services.ScanNetIntentService;
 import com.blacknebula.mousify.util.Logger;
-import com.blacknebula.mousify.util.MousifyApplication;
 import com.google.common.base.Strings;
 
 import org.parceler.Parcels;
@@ -34,13 +35,16 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 
-public class MainActivity extends Activity {
+public class DebugActivity extends Activity {
 
     private static final int SCAN_NET_REQUEST_CODE = 0;
     private static final int DISCOVER_REQUEST_CODE = 1;
 
     @InjectView(R.id.networkInfoButton)
     Button networkInfoButton;
+
+    @InjectView(R.id.mousePadButton)
+    Button mousePadButton;
 
     @InjectView(R.id.scanButton)
     Button scanButton;
@@ -73,7 +77,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.debug);
         ButterKnife.inject(this);
     }
 
@@ -144,7 +148,7 @@ public class MainActivity extends Activity {
         }
         final String subNet = retrieveSubNet(connectionInfo.getBroadcastAddress());
         final PendingIntent pendingResult = createPendingResult(SCAN_NET_REQUEST_CODE, new Intent(), 0);
-        final Intent intent = new Intent(getApplicationContext(), ScanNetIntentService.class);
+        final Intent intent = new Intent(this, ScanNetIntentService.class);
         intent.putExtra(ScanNetIntentService.URL_EXTRA, subNet);
         intent.putExtra(ScanNetIntentService.IP_EXTRA, targetIpAddress);
         intent.putExtra(ScanNetIntentService.PENDING_RESULT_EXTRA, pendingResult);
@@ -156,10 +160,16 @@ public class MainActivity extends Activity {
         detectedDevicesText.setText("pending ...");
         final PendingIntent pendingResult = createPendingResult(DISCOVER_REQUEST_CODE, new Intent(), 0);
 
-        final Intent intent = new Intent(getApplicationContext(), RemoteMousifyIntentService.class);
+        final Intent intent = new Intent(this, RemoteMousifyIntentService.class);
         intent.setAction(RemoteMousifyIntentService.DISCOVER_ACTION);
         intent.putExtra(ScanNetIntentService.PENDING_RESULT_EXTRA, pendingResult);
         startService(intent);
+    }
+
+    @OnClick(R.id.mousePadButton)
+    public void openMousePad(View view) {
+        final Intent intent = new Intent(this, MousePadActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.connectButton)
@@ -171,7 +181,7 @@ public class MainActivity extends Activity {
 
         final String ip = targetIpAddressEditText.getText().toString();
 
-        final Intent intent = new Intent(getApplicationContext(), RemoteMousifyIntentService.class);
+        final Intent intent = new Intent(this, RemoteMousifyIntentService.class);
         intent.setAction(RemoteMousifyIntentService.CONNECT_ACTION);
         intent.putExtra(RemoteMousifyIntentService.IP_EXTRA, ip);
         startService(intent);
@@ -179,16 +189,17 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.disconnectButton)
     public void disconnect(View view) {
-        final Intent intent = new Intent(getApplicationContext(), RemoteMousifyIntentService.class);
+        final Intent intent = new Intent(this, RemoteMousifyIntentService.class);
         intent.setAction(RemoteMousifyIntentService.DISCONNECT_ACTION);
         startService(intent);
     }
 
     @OnClick(R.id.sendButton)
     public void send(View view) {
-        final Intent intent = new Intent(getApplicationContext(), RemoteMousifyIntentService.class);
+        final Intent intent = new Intent(this, RemoteMousifyIntentService.class);
         intent.setAction(RemoteMousifyIntentService.SEND_ACTION);
-        intent.putExtra(RemoteMousifyIntentService.MESSAGE_EXTRA, "Hello world!");
+        Parcelable parcelable = Parcels.wrap(new MotionRequest(10, 10));
+        intent.putExtra(RemoteMousifyIntentService.COORDINATES_EXTRA, parcelable);
         startService(intent);
     }
 
@@ -200,6 +211,7 @@ public class MainActivity extends Activity {
         final String host = Parcels.unwrap(result);
         final String value = detectedDevicesText.getText().toString().isEmpty() ? host : detectedDevicesText.getText() + "\n" + host;
         detectedDevicesText.setText(value);
+        targetIpAddressEditText.setText(value);
     }
 
     private void handleEnd(Intent data) {
