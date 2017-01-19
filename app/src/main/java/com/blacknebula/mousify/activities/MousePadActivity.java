@@ -12,6 +12,7 @@ import com.blacknebula.mousify.R;
 import com.blacknebula.mousify.dto.MotionHistory;
 import com.blacknebula.mousify.event.ClickEvent;
 import com.blacknebula.mousify.event.MotionEvent;
+import com.blacknebula.mousify.event.ScrollEvent;
 import com.blacknebula.mousify.services.RemoteMousifyIntentService;
 
 import org.parceler.Parcels;
@@ -19,11 +20,15 @@ import org.parceler.Parcels;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 
-public class MousePadActivity extends AppCompatActivity implements View.OnTouchListener {
+public class MousePadActivity extends AppCompatActivity {
 
     @InjectView(R.id.mousePad)
     LinearLayout mousePadLayout;
+
+    @InjectView(R.id.scrollZone)
+    LinearLayout scrollLayout;
 
     @InjectView(R.id.left_button)
     Button leftButton;
@@ -36,11 +41,10 @@ public class MousePadActivity extends AppCompatActivity implements View.OnTouchL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mouse_pad);
         ButterKnife.inject(this);
-        mousePadLayout.setOnTouchListener(this);
     }
 
-    @Override
-    public boolean onTouch(View v, android.view.MotionEvent event) {
+    @OnTouch(R.id.mousePad)
+    public boolean onMousePadTouch(View v, android.view.MotionEvent event) {
         if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
             float x = event.getRawX();
             float y = event.getRawY();
@@ -58,6 +62,20 @@ public class MousePadActivity extends AppCompatActivity implements View.OnTouchL
                 sendClick(clickEvent);
             }
 
+        }
+        return true;
+    }
+
+    @OnTouch(R.id.scrollZone)
+    public boolean onScrollZoneTouch(View v, android.view.MotionEvent event) {
+        if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+            float x = event.getRawX();
+            float y = event.getRawY();
+            MotionHistory.getInstance().updateDownCoordinates(x, y);
+        } else if (event.getAction() == android.view.MotionEvent.ACTION_MOVE) {
+            final MotionEvent motionEvent = getDistance(MotionHistory.getInstance().getStartX(), MotionHistory.getInstance().getStartY(), event);
+            final ScrollEvent scrollEvent = new ScrollEvent(motionEvent.getDy());
+            sendScroll(scrollEvent);
         }
         return true;
     }
@@ -96,6 +114,14 @@ public class MousePadActivity extends AppCompatActivity implements View.OnTouchL
         intent.setAction(RemoteMousifyIntentService.SEND_CLICK_ACTION);
         Parcelable parcelable = Parcels.wrap(clickEvent);
         intent.putExtra(RemoteMousifyIntentService.CLICK_EXTRA, parcelable);
+        startService(intent);
+    }
+
+    private void sendScroll(ScrollEvent scrollEvent) {
+        final Intent intent = new Intent(this, RemoteMousifyIntentService.class);
+        intent.setAction(RemoteMousifyIntentService.SCROLL_ACTION);
+        Parcelable parcelable = Parcels.wrap(scrollEvent);
+        intent.putExtra(RemoteMousifyIntentService.SCROLL_EXTRA, parcelable);
         startService(intent);
     }
 }

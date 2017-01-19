@@ -10,6 +10,7 @@ import com.blacknebula.mousify.MousifyApplication;
 import com.blacknebula.mousify.dto.MotionHistory;
 import com.blacknebula.mousify.event.ClickEvent;
 import com.blacknebula.mousify.event.MotionEvent;
+import com.blacknebula.mousify.event.ScrollEvent;
 import com.blacknebula.mousify.util.Logger;
 import com.blacknebula.mousify.util.ViewUtils;
 import com.esotericsoftware.kryo.Kryo;
@@ -33,8 +34,10 @@ public class RemoteMousifyIntentService extends IntentService {
     public static final String DISCONNECT_ACTION = "disconnect";
     public static final String SEND_MOTION_ACTION = "sendMotion";
     public static final String SEND_CLICK_ACTION = "sendClick";
+    public static final String SCROLL_ACTION = "sendScroll";
     public static final String MOTION_EXTRA = "motion";
     public static final String CLICK_EXTRA = "click";
+    public static final String SCROLL_EXTRA = "scroll";
     private static final String TAG = RemoteMousifyIntentService.class.getSimpleName();
 
     public static Client client;
@@ -63,6 +66,10 @@ public class RemoteMousifyIntentService extends IntentService {
                 final Parcelable parcelable = intent.getParcelableExtra(CLICK_EXTRA);
                 final ClickEvent clickEvent = Parcels.unwrap(parcelable);
                 sendClick(clickEvent);
+            } else if (SCROLL_ACTION.equals(action)) {
+                final Parcelable parcelable = intent.getParcelableExtra(SCROLL_EXTRA);
+                final ScrollEvent scrollEvent = Parcels.unwrap(parcelable);
+                sendScroll(scrollEvent);
             } else if (DISCONNECT_ACTION.equals(action)) {
                 disconnect();
             } else if (DISCOVER_ACTION.equals(action)) {
@@ -115,6 +122,7 @@ public class RemoteMousifyIntentService extends IntentService {
                 final Kryo kryo = client.getKryo();
                 kryo.register(MotionEvent.class);
                 kryo.register(ClickEvent.class);
+                kryo.register(ScrollEvent.class);
                 client.start();
                 client.connect(5000, InetAddress.getByName(ip), BuildConfig.TCP_PORT, BuildConfig.UDP_PORT);
                 ViewUtils.showToast(MousifyApplication.getAppContext(), "connected to " + ip);
@@ -158,7 +166,24 @@ public class RemoteMousifyIntentService extends IntentService {
             client.reconnect();
         }
         client.sendTCP(clickEvent);
+    }
 
+    private void sendScroll(ScrollEvent scrollEvent) throws IOException {
+        if (MotionHistory.shouldIgnoreScroll(scrollEvent.getAmount())) {
+            Logger.warn(Logger.Type.MOUSIFY, "Ignore scroll %s", scrollEvent.getAmount());
+            return;
+        }
+        Logger.info(Logger.Type.MOUSIFY, "----> sending scroll %s", scrollEvent.getAmount());
+
+        if (client == null) {
+            ViewUtils.showToast(MousifyApplication.getAppContext(), "client should not be null");
+            return;
+        }
+
+        if (!client.isConnected()) {
+            client.reconnect();
+        }
+        client.sendTCP(scrollEvent);
     }
 
 }

@@ -8,6 +8,7 @@ package com.blacknebula.mousify.dto;
 public class MotionHistory {
     private static final int Y_THRESHOLD = 10;
     private static final int X_THRESHOLD = 10;
+    private static final int SCROLL_THRESHOLD = 0;
 
     private static MotionHistory motionHistory;
     private int startX;
@@ -31,6 +32,10 @@ public class MotionHistory {
 
     public static boolean shouldIgnoreMove(int dx, int dy) {
         return Math.abs(dx) < X_THRESHOLD && Math.abs(dy) < Y_THRESHOLD;
+    }
+
+    public static boolean shouldIgnoreScroll(int amount) {
+        return Math.abs(amount) == SCROLL_THRESHOLD;
     }
 
     public void updateDownCoordinates(float x, float y) {
