@@ -58,7 +58,7 @@ public class MousePadActivity extends AppCompatActivity {
             float y = event.getRawY();
             MotionHistory.getInstance().updateUpCoordinates(x, y);
             if (MotionHistory.getInstance().isClickEvent()) {
-                final ClickEvent clickEvent = new ClickEvent(true);
+                final ClickEvent clickEvent = new ClickEvent(true, ClickEvent.ACTION_CLICK);
                 sendClick(clickEvent);
             }
 
@@ -80,15 +80,21 @@ public class MousePadActivity extends AppCompatActivity {
         return true;
     }
 
-    @OnClick(R.id.left_button)
-    public void leftClick(View view) {
-        final ClickEvent clickEvent = new ClickEvent(true);
-        sendClick(clickEvent);
+    @OnTouch(R.id.left_button)
+    public boolean leftClick(View v, android.view.MotionEvent event) {
+        if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+            final ClickEvent clickEvent = new ClickEvent(true, ClickEvent.ACTION_DOWN);
+            sendClick(clickEvent);
+        } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+            final ClickEvent clickEvent = new ClickEvent(true, ClickEvent.ACTION_UP);
+            sendClick(clickEvent);
+        }
+        return true;
     }
 
     @OnClick(R.id.right_button)
     public void rightClick(View view) {
-        final ClickEvent clickEvent = new ClickEvent(false);
+        final ClickEvent clickEvent = new ClickEvent(false, ClickEvent.ACTION_CLICK);
         sendClick(clickEvent);
     }
 
