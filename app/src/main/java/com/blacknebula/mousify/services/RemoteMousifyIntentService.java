@@ -22,22 +22,24 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
 
-import static com.blacknebula.mousify.services.ScanNetIntentService.HOSTS_EXTRA;
-import static com.blacknebula.mousify.services.ScanNetIntentService.PENDING_RESULT_EXTRA;
-import static com.blacknebula.mousify.services.ScanNetIntentService.RESULT_CODE;
 
 public class RemoteMousifyIntentService extends IntentService {
 
-    public static final String IP_EXTRA = "ip";
+    //Actions
     public static final String DISCOVER_ACTION = "discover";
     public static final String CONNECT_ACTION = "connect";
     public static final String DISCONNECT_ACTION = "disconnect";
     public static final String SEND_MOTION_ACTION = "sendMotion";
     public static final String SEND_CLICK_ACTION = "sendClick";
     public static final String SCROLL_ACTION = "sendScroll";
+    // Extras
+    public static final String IP_EXTRA = "ip";
+    public static final String PENDING_RESULT_EXTRA = "pending_result";
+    public static final String REPLY_EXTRA = "reply";
     public static final String MOTION_EXTRA = "motion";
     public static final String CLICK_EXTRA = "click";
     public static final String SCROLL_EXTRA = "scroll";
+    private static final int RESULT_CODE = 0;
     private static final String TAG = RemoteMousifyIntentService.class.getSimpleName();
 
     public static Client client;
@@ -57,7 +59,8 @@ public class RemoteMousifyIntentService extends IntentService {
             final String action = intent.getAction();
             if (CONNECT_ACTION.equals(action)) {
                 final String ip = intent.getStringExtra(IP_EXTRA);
-                connect(ip);
+                PendingIntent reply = intent.getParcelableExtra(PENDING_RESULT_EXTRA);
+                connect(ip, reply);
             } else if (SEND_MOTION_ACTION.equals(action)) {
                 final Parcelable parcelable = intent.getParcelableExtra(MOTION_EXTRA);
                 final MotionEvent motionEvent = Parcels.unwrap(parcelable);
@@ -89,30 +92,15 @@ public class RemoteMousifyIntentService extends IntentService {
         final List<InetAddress> inetAddresses = client.discoverHosts(BuildConfig.UDP_PORT, 5000);
 
         if (inetAddresses.isEmpty()) {
-            sendHost(reply, "nothing found!");
+            sendReply(reply, "nothing found!");
         } else {
             for (InetAddress inetAddress : inetAddresses) {
-                sendHost(reply, inetAddress.getHostName());
+                sendReply(reply, inetAddress.getHostName());
             }
         }
     }
 
-    private void sendHost(PendingIntent replyIntent, String host) throws PendingIntent.CanceledException {
-        final Intent result = new Intent();
-        result.putExtra(HOSTS_EXTRA, Parcels.wrap(host));
-        replyIntent.send(this, RESULT_CODE, result);
-    }
-
-    private void disconnect() {
-        if (client.isConnected()) {
-            client.stop();
-            ViewUtils.showToast(MousifyApplication.getAppContext(), "Disconnected");
-        } else {
-            ViewUtils.showToast(MousifyApplication.getAppContext(), "Already disconnected");
-        }
-    }
-
-    private void connect(String ip) {
+    private void connect(String ip, PendingIntent reply) {
         ViewUtils.showToast(MousifyApplication.getAppContext(), "Connecting");
         try {
             if (client == null) {
@@ -129,9 +117,29 @@ public class RemoteMousifyIntentService extends IntentService {
             } else {
                 ViewUtils.showToast(MousifyApplication.getAppContext(), "Client already connected");
             }
+            sendReply(reply, "Connection successful");
         } catch (IOException e) {
             Logger.error(Logger.Type.MOUSIFY, e, "Could not connect client");
-            ViewUtils.showToast(MousifyApplication.getAppContext(), "Connection failed");
+            sendReply(reply, "Connection failed");
+        }
+    }
+
+    private void sendReply(PendingIntent replyIntent, String replyMessage) {
+        final Intent result = new Intent();
+        result.putExtra(REPLY_EXTRA, Parcels.wrap(replyMessage));
+        try {
+            replyIntent.send(this, RESULT_CODE, result);
+        } catch (PendingIntent.CanceledException e) {
+            Logger.error(Logger.Type.MOUSIFY, e, "Could not send back reply %s", replyMessage);
+        }
+    }
+
+    private void disconnect() {
+        if (client.isConnected()) {
+            client.stop();
+            ViewUtils.showToast(MousifyApplication.getAppContext(), "Disconnected");
+        } else {
+            ViewUtils.showToast(MousifyApplication.getAppContext(), "Already disconnected");
         }
     }
 

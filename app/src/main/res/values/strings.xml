@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Mousify</string>
+    <string name="app_intro">Configuration</string>
+    <string name="step1_title">Welcome to Mousify</string>
+    <string name="step1_description">This wizard will help you connect Phone to your PC.\nMake sure that both devices are connected to the same Wifi local network</string>
 </resources>

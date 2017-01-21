@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         debug {
@@ -42,6 +43,12 @@ dependencies {
     // kryonet
     compile 'kryonet:kryonet:2.21'
     compile 'com.esotericsoftware:kryo:4.0.0'
+    //app intro
+    compile 'com.github.paolorotolo:appintro:4.1.0'
+    // stated fragment
+    compile 'com.inthecheesefactory.thecheeselibrary:stated-fragment-support-v4:0.9.3'
+    //loading effect
+    compile 'com.wang.avi:library:2.1.3'
 
 }
 
