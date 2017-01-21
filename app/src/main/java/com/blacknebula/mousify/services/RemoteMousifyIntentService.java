@@ -39,7 +39,11 @@ public class RemoteMousifyIntentService extends IntentService {
     public static final String MOTION_EXTRA = "motion";
     public static final String CLICK_EXTRA = "click";
     public static final String SCROLL_EXTRA = "scroll";
-    private static final int RESULT_CODE = 0;
+    // intent codes
+    public static final int RESULT_CODE = 0;
+    public static final int DISCOVER_REQUEST_CODE = 1;
+    public static final int CONNECT_REQUEST_CODE = 2;
+
     private static final String TAG = RemoteMousifyIntentService.class.getSimpleName();
 
     public static Client client;
@@ -79,7 +83,6 @@ public class RemoteMousifyIntentService extends IntentService {
                 PendingIntent reply = intent.getParcelableExtra(PENDING_RESULT_EXTRA);
                 discoverHosts(reply);
             }
-
 
         } catch (Exception ex) {
             // could do better by treating the different sax/xml exceptions individually
@@ -121,16 +124,6 @@ public class RemoteMousifyIntentService extends IntentService {
         } catch (IOException e) {
             Logger.error(Logger.Type.MOUSIFY, e, "Could not connect client");
             sendReply(reply, "Connection failed");
-        }
-    }
-
-    private void sendReply(PendingIntent replyIntent, String replyMessage) {
-        final Intent result = new Intent();
-        result.putExtra(REPLY_EXTRA, Parcels.wrap(replyMessage));
-        try {
-            replyIntent.send(this, RESULT_CODE, result);
-        } catch (PendingIntent.CanceledException e) {
-            Logger.error(Logger.Type.MOUSIFY, e, "Could not send back reply %s", replyMessage);
         }
     }
 
@@ -192,6 +185,16 @@ public class RemoteMousifyIntentService extends IntentService {
             client.reconnect();
         }
         client.sendTCP(scrollEvent);
+    }
+
+    private <T> void sendReply(PendingIntent replyIntent, T replyMessage) {
+        final Intent result = new Intent();
+        result.putExtra(REPLY_EXTRA, Parcels.wrap(replyMessage));
+        try {
+            replyIntent.send(this, RESULT_CODE, result);
+        } catch (PendingIntent.CanceledException e) {
+            Logger.error(Logger.Type.MOUSIFY, e, "Could not send back reply %s", replyMessage);
+        }
     }
 
 }

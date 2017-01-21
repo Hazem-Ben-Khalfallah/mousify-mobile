@@ -3,4 +3,6 @@
     <string name="app_intro">Configuration</string>
     <string name="step1_title">Welcome to Mousify</string>
     <string name="step1_description">This wizard will help you connect Phone to your PC.\nMake sure that both devices are connected to the same Wifi local network</string>
+    <string name="step2_title">Mousify Server installation</string>
+    <string name="step2_description">Mousify Server should be installed in your PC.\n</string>
 </resources>
