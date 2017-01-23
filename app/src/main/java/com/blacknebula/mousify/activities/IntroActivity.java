@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 
 import com.blacknebula.mousify.R;
 import com.blacknebula.mousify.fragments.ConnectionSlide;
+import com.blacknebula.mousify.fragments.ServerInstallationInstructionSlide;
 import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.inthecheesefactory.thecheeselibrary.fragment.support.v4.app.bus.ActivityResultBus;
@@ -15,7 +16,6 @@ import com.inthecheesefactory.thecheeselibrary.fragment.support.v4.app.bus.Activ
 
 public class IntroActivity extends AppIntro {
     private final String bgColor = "#66ce91";
-    final private String url = "https://github.com/Hazem-Ben-Khalfallah/mousify-server";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public class IntroActivity extends AppIntro {
 
         // Note here that we DO NOT use setContentView();
         addSlide(AppIntroFragment.newInstance(getString(R.string.step1_title), getString(R.string.step1_description), R.mipmap.startup, Color.parseColor(bgColor)));
-        addSlide(AppIntroFragment.newInstance(getString(R.string.step2_title), getString(R.string.step2_description) + url, R.drawable.ic_cloud, Color.parseColor(bgColor)));
+        addSlide(ServerInstallationInstructionSlide.newInstance(R.layout.installation_step, Color.parseColor(bgColor)));
         addSlide(ConnectionSlide.newInstance(R.layout.configuration, Color.parseColor(bgColor)));
 
         // OPTIONAL METHODS
