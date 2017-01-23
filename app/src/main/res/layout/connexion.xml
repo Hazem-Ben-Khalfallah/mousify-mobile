@@ -120,6 +120,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:textColor="@color/colorAccent"
+            android:hint="xxx.xxx.xxx.xxx"
             app:maskIcon="@drawable/access_point_network"
             app:maskIconColor="@color/colorAccent"/>
 

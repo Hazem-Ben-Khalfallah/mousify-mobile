@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mouseLayout"
     android:layout_width="match_parent"
@@ -10,8 +11,8 @@
     <LinearLayout
         android:id="@+id/padAndButtons"
         android:layout_width="0dp"
-        android:layout_weight="0.9"
         android:layout_height="match_parent"
+        android:layout_weight="0.9"
         android:orientation="vertical">
 
         <LinearLayout
@@ -28,24 +29,84 @@
             android:layout_weight="0.15"
             android:orientation="horizontal">
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/left_button"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5" />
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_focusColor="#9bd823"
+                fancy:fb_ghost="true"
+                fancy:fb_iconPaddingLeft="0dp"
+                fancy:fb_iconPaddingRight="0dp"
+                fancy:fb_iconResource="@mipmap/left_click"
+                fancy:fb_radius="10dp"
+                fancy:fb_text="" />
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/right_button"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5" />
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                fancy:fb_borderColor="#FFFFFF"
+                fancy:fb_borderWidth="1dp"
+                fancy:fb_focusColor="#9bd823"
+                fancy:fb_ghost="true"
+                fancy:fb_iconPaddingLeft="0dp"
+                fancy:fb_iconPaddingRight="0dp"
+                fancy:fb_iconResource="@mipmap/right_click"
+                fancy:fb_radius="10dp"
+                fancy:fb_text="" />
+
         </LinearLayout>
     </LinearLayout>
-    <LinearLayout
+
+    <RelativeLayout
         android:id="@+id/scrollZone"
         android:layout_width="0dp"
-        android:layout_weight="0.1"
         android:layout_height="match_parent"
-        android:orientation="vertical" />
+        android:layout_weight="0.1">
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/scrollUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fancy:fb_borderColor="#FFFFFF"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_focusColor="#9bd823"
+            fancy:fb_ghost="true"
+            fancy:fb_iconPaddingLeft="0dp"
+            fancy:fb_iconPaddingRight="0dp"
+            fancy:fb_iconResource="@mipmap/up"
+            fancy:fb_radius="30dp"
+            fancy:fb_text="" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/scrollDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fancy:fb_borderColor="#FFFFFF"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_focusColor="#9bd823"
+            fancy:fb_ghost="true"
+            fancy:fb_iconPaddingLeft="0dp"
+            fancy:fb_iconPaddingRight="0dp"
+            fancy:fb_iconResource="@mipmap/down"
+            fancy:fb_radius="30dp"
+            fancy:fb_text=""
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
+
+    </RelativeLayout>
+
 
 </LinearLayout>

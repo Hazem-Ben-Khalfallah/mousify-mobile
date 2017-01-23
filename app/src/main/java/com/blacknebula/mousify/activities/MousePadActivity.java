@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.blacknebula.mousify.R;
 import com.blacknebula.mousify.dto.MotionHistory;
@@ -21,6 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 public class MousePadActivity extends AppCompatActivity {
 
@@ -28,13 +30,13 @@ public class MousePadActivity extends AppCompatActivity {
     LinearLayout mousePadLayout;
 
     @InjectView(R.id.scrollZone)
-    LinearLayout scrollLayout;
+    RelativeLayout scrollLayout;
 
     @InjectView(R.id.left_button)
-    Button leftButton;
+    FancyButton leftButton;
 
     @InjectView(R.id.right_button)
-    Button rightButton;
+    FancyButton rightButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
