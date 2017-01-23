@@ -32,7 +32,7 @@ import mehdi.sakout.fancybuttons.FancyButton;
 import static com.blacknebula.mousify.services.RemoteMousifyIntentService.CONNECT_REQUEST_CODE;
 import static com.blacknebula.mousify.services.RemoteMousifyIntentService.DISCOVER_REQUEST_CODE;
 
-public class ConnexionSlide extends StatedFragment implements ISlideBackgroundColorHolder, ISlidePolicy {
+public class ConnexionSlide extends StatedFragment implements ISlideBackgroundColorHolder {
 
     protected static final String ARG_BG_COLOR = "bgColor";
     private static final String ARG_LAYOUT_RES_ID = "layoutResId";
@@ -164,16 +164,6 @@ public class ConnexionSlide extends StatedFragment implements ISlideBackgroundCo
             connectButton.setIconColor(Color.parseColor(ICON_DISABLED_COLOR));
         }
         isConnected = true;
-    }
-
-    @Override
-    public boolean isPolicyRespected() {
-        return isConnected; // If user should be allowed to leave this slide
-    }
-
-    @Override
-    public void onUserIllegallyRequestedNextPage() {
-        ViewUtils.showToast(getActivity(), "Not connected to Mousify Server");
     }
 
     @Override

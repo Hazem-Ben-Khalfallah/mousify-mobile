@@ -52,6 +52,10 @@ public class RemoteMousifyIntentService extends IntentService {
         super(TAG);
     }
 
+    public static boolean isCoonected() {
+        return client != null && client.isConnected();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();

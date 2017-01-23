@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import com.blacknebula.mousify.R;
 import com.blacknebula.mousify.fragments.ConnexionSlide;
 import com.blacknebula.mousify.fragments.InstallationSlide;
+import com.blacknebula.mousify.services.RemoteMousifyIntentService;
+import com.blacknebula.mousify.util.ViewUtils;
 import com.github.paolorotolo.appintro.AppIntro;
 import com.inthecheesefactory.thecheeselibrary.fragment.support.v4.app.bus.ActivityResultBus;
 import com.inthecheesefactory.thecheeselibrary.fragment.support.v4.app.bus.ActivityResultEvent;
@@ -52,8 +54,12 @@ public class IntroActivity extends AppIntro {
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
-        final Intent intent = new Intent(this, MousePadActivity.class);
-        startActivity(intent);
+        if (RemoteMousifyIntentService.isCoonected()) {
+            final Intent intent = new Intent(this, MousePadActivity.class);
+            startActivity(intent);
+        } else {
+            ViewUtils.showToast(this, "Client not connected");
+        }
     }
 
 }
