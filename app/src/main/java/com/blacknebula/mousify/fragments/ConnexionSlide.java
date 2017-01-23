@@ -13,11 +13,11 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.blacknebula.mousify.R;
+import com.blacknebula.mousify.activities.MousePadActivity;
 import com.blacknebula.mousify.services.RemoteMousifyIntentService;
 import com.blacknebula.mousify.util.ViewUtils;
 import com.blacknebula.mousify.view.MaskedEditText;
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
-import com.github.paolorotolo.appintro.ISlidePolicy;
 import com.google.common.base.Strings;
 import com.inthecheesefactory.thecheeselibrary.fragment.support.v4.app.StatedFragment;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -52,7 +52,6 @@ public class ConnexionSlide extends StatedFragment implements ISlideBackgroundCo
 
     private int layoutResId;
     private int bgColor;
-    private boolean isConnected;
 
     public static ConnexionSlide newInstance(int layoutResId, int bgColor) {
         ConnexionSlide connexionSlide = new ConnexionSlide();
@@ -162,8 +161,9 @@ public class ConnexionSlide extends StatedFragment implements ISlideBackgroundCo
         final String host = Parcels.unwrap(result);
         if (host.contains("Connection failed")) {
             connectButton.setIconColor(Color.parseColor(ICON_DISABLED_COLOR));
+        } else {
+            openMousePad();
         }
-        isConnected = true;
     }
 
     @Override
@@ -188,5 +188,10 @@ public class ConnexionSlide extends StatedFragment implements ISlideBackgroundCo
     private void stopLoading() {
         loading.hide();
         loading.setVisibility(View.GONE);
+    }
+
+    private void openMousePad() {
+        final Intent intent = new Intent(getActivity(), MousePadActivity.class);
+        startActivity(intent);
     }
 }

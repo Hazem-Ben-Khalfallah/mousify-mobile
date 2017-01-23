@@ -55,11 +55,15 @@ public class IntroActivity extends AppIntro {
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
         if (RemoteMousifyIntentService.isCoonected()) {
-            final Intent intent = new Intent(this, MousePadActivity.class);
-            startActivity(intent);
+            openMousePad();
         } else {
             ViewUtils.showToast(this, "Client not connected");
         }
+    }
+
+    private void openMousePad() {
+        final Intent intent = new Intent(this, MousePadActivity.class);
+        startActivity(intent);
     }
 
 }
