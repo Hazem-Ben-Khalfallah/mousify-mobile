@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.IntroActivity"
-            android:label="@string/app_intro">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +28,9 @@
             android:name=".services.RemoteMousifyIntentService"
             android:exported="false" />
 
-        <activity android:name=".activities.MousePadActivity"></activity>
+        <activity
+            android:name=".activities.MousePadActivity"
+            android:label="@string/app_name" />
     </application>
 
 </manifest>

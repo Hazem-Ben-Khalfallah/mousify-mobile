@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Mousify</string>
-    <string name="app_intro">Connexion</string>
     <string name="step1_title">Welcome to Mousify</string>
     <string name="step1_description"><a href="https://github.com/Hazem-Ben-Khalfallah/mousify-server">Read server installation instructions</a></string>
 </resources>
