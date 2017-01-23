@@ -7,8 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.blacknebula.mousify.R;
-import com.blacknebula.mousify.fragments.ConnectionSlide;
-import com.blacknebula.mousify.fragments.ServerInstallationInstructionSlide;
+import com.blacknebula.mousify.fragments.ConnexionSlide;
+import com.blacknebula.mousify.fragments.InstallationSlide;
 import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.inthecheesefactory.thecheeselibrary.fragment.support.v4.app.bus.ActivityResultBus;
@@ -22,9 +22,8 @@ public class IntroActivity extends AppIntro {
         super.onCreate(savedInstanceState);
 
         // Note here that we DO NOT use setContentView();
-        addSlide(AppIntroFragment.newInstance(getString(R.string.step1_title), getString(R.string.step1_description), R.mipmap.startup, Color.parseColor(bgColor)));
-        addSlide(ServerInstallationInstructionSlide.newInstance(R.layout.installation_step, Color.parseColor(bgColor)));
-        addSlide(ConnectionSlide.newInstance(R.layout.configuration, Color.parseColor(bgColor)));
+        addSlide(InstallationSlide.newInstance(R.layout.installation_step, Color.parseColor(bgColor)));
+        addSlide(ConnexionSlide.newInstance(R.layout.connexion, Color.parseColor(bgColor)));
 
         // OPTIONAL METHODS
         // Override bar/separator color.

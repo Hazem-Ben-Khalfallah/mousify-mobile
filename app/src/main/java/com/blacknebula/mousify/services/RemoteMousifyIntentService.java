@@ -95,7 +95,7 @@ public class RemoteMousifyIntentService extends IntentService {
         final List<InetAddress> inetAddresses = client.discoverHosts(BuildConfig.UDP_PORT, 5000);
 
         if (inetAddresses.isEmpty()) {
-            sendReply(reply, "nothing found!");
+            sendReply(reply, "");
         } else {
             for (InetAddress inetAddress : inetAddresses) {
                 sendReply(reply, inetAddress.getHostName());

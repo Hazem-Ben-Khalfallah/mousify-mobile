@@ -9,6 +9,8 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,22 +20,28 @@ import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class ServerInstallationInstructionSlide extends Fragment implements ISlideBackgroundColorHolder {
+public class InstallationSlide extends Fragment implements ISlideBackgroundColorHolder {
 
     protected static final String ARG_BG_COLOR = "bgColor";
     private static final String ARG_LAYOUT_RES_ID = "layoutResId";
 
-    @InjectView(R.id.configuration_layout)
-    RelativeLayout mainLayout;
+    @InjectView(R.id.install_layout)
+    LinearLayout mainLayout;
 
-    @InjectView(R.id.step2Description)
+    @InjectView(R.id.title)
+    TextView title;
+
+    @InjectView(R.id.description_1)
     TextView description;
+
+    @InjectView(R.id.image)
+    ImageView imageView;
 
     private int layoutResId;
     private int bgColor;
 
-    public static ServerInstallationInstructionSlide newInstance(int layoutResId, int bgColor) {
-        ServerInstallationInstructionSlide installationInstructionSlide = new ServerInstallationInstructionSlide();
+    public static InstallationSlide newInstance(int layoutResId, int bgColor) {
+        InstallationSlide installationInstructionSlide = new InstallationSlide();
 
         Bundle args = new Bundle();
         args.putInt(ARG_LAYOUT_RES_ID, layoutResId);
@@ -67,6 +75,7 @@ public class ServerInstallationInstructionSlide extends Fragment implements ISli
         setBackgroundColor(bgColor);
         // enable link in text
         description.setMovementMethod(LinkMovementMethod.getInstance());
+        imageView.setImageResource(R.mipmap.startup);
         return view;
     }
 

@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Mousify</string>
-    <string name="app_intro">Configuration</string>
+    <string name="app_intro">Connexion</string>
     <string name="step1_title">Welcome to Mousify</string>
-    <string name="step1_description">This wizard will help you connect Phone to your PC.\nMake sure that both devices are connected to the same Wifi local network</string>
-    <string name="step2_title">Mousify Server installation</string>
-    <string name="step2_description"><a href="https://github.com/Hazem-Ben-Khalfallah/mousify-server">Read installation instructions from this link</a></string>
+    <string name="step1_description"><a href="https://github.com/Hazem-Ben-Khalfallah/mousify-server">Read server installation instructions</a></string>
 </resources>

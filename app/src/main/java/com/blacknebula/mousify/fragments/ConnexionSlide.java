@@ -16,7 +16,6 @@ import com.blacknebula.mousify.R;
 import com.blacknebula.mousify.services.RemoteMousifyIntentService;
 import com.blacknebula.mousify.util.ViewUtils;
 import com.blacknebula.mousify.view.MaskedEditText;
-import com.blacknebula.mousify.view.SwitchIconView;
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 import com.github.paolorotolo.appintro.ISlidePolicy;
 import com.google.common.base.Strings;
@@ -28,23 +27,26 @@ import org.parceler.Parcels;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.blacknebula.mousify.services.RemoteMousifyIntentService.CONNECT_REQUEST_CODE;
 import static com.blacknebula.mousify.services.RemoteMousifyIntentService.DISCOVER_REQUEST_CODE;
 
-public class ConnectionSlide extends StatedFragment implements ISlideBackgroundColorHolder, ISlidePolicy {
+public class ConnexionSlide extends StatedFragment implements ISlideBackgroundColorHolder, ISlidePolicy {
 
     protected static final String ARG_BG_COLOR = "bgColor";
     private static final String ARG_LAYOUT_RES_ID = "layoutResId";
+    private static final String ICON_ENABLED_COLOR = "#7ab800";
+    private static final String ICON_DISABLED_COLOR = "#000000";
 
-    @InjectView(R.id.configuration_layout)
+    @InjectView(R.id.connexion_layout)
     RelativeLayout mainLayout;
-    @InjectView(R.id.targetIpAddressEditText)
+    @InjectView(R.id.host_ip)
     MaskedEditText targetIpAddressEditText;
     @InjectView(R.id.connectButton)
-    SwitchIconView connectButton;
+    FancyButton connectButton;
     @InjectView(R.id.discoverButton)
-    SwitchIconView discoverButton;
+    FancyButton discoverButton;
     @InjectView(R.id.loading)
     AVLoadingIndicatorView loading;
 
@@ -52,15 +54,15 @@ public class ConnectionSlide extends StatedFragment implements ISlideBackgroundC
     private int bgColor;
     private boolean isConnected;
 
-    public static ConnectionSlide newInstance(int layoutResId, int bgColor) {
-        ConnectionSlide connectionSlide = new ConnectionSlide();
+    public static ConnexionSlide newInstance(int layoutResId, int bgColor) {
+        ConnexionSlide connexionSlide = new ConnexionSlide();
 
         Bundle args = new Bundle();
         args.putInt(ARG_LAYOUT_RES_ID, layoutResId);
         args.putInt(ARG_BG_COLOR, bgColor);
-        connectionSlide.setArguments(args);
+        connexionSlide.setArguments(args);
 
-        return connectionSlide;
+        return connexionSlide;
     }
 
     @Override
@@ -85,6 +87,8 @@ public class ConnectionSlide extends StatedFragment implements ISlideBackgroundC
         View view = inflater.inflate(layoutResId, container, false);
         ButterKnife.inject(this, view);
         setBackgroundColor(bgColor);
+        discoverButton.setIconColor(Color.parseColor(ICON_DISABLED_COLOR));
+        connectButton.setIconColor(Color.parseColor(ICON_DISABLED_COLOR));
         return view;
     }
 
@@ -103,7 +107,7 @@ public class ConnectionSlide extends StatedFragment implements ISlideBackgroundC
 
     @OnClick(R.id.discoverButton)
     public void discover(View view) {
-        discoverButton.setIconEnabled(true);
+        discoverButton.setIconColor(Color.parseColor(ICON_ENABLED_COLOR));
         startLoading();
 
         final PendingIntent pendingResult = getActivity().createPendingResult(DISCOVER_REQUEST_CODE, new Intent(), 0);
@@ -116,11 +120,15 @@ public class ConnectionSlide extends StatedFragment implements ISlideBackgroundC
 
     @OnClick(R.id.connectButton)
     public void connect(View view) {
-        connectButton.setIconEnabled(true);
+        connectToHost();
+    }
 
-        if (Strings.isNullOrEmpty(targetIpAddressEditText.getText().toString())) {
+    private void connectToHost() {
+        connectButton.setIconColor(Color.parseColor(ICON_ENABLED_COLOR));
+
+        if (Strings.isNullOrEmpty(targetIpAddressEditText.getUnmaskedText())) {
             ViewUtils.showToast(getActivity(), "Should set ip address");
-            connectButton.setIconEnabled(false, true);
+            connectButton.setIconColor(Color.parseColor(ICON_DISABLED_COLOR));
             return;
         }
 
@@ -140,18 +148,20 @@ public class ConnectionSlide extends StatedFragment implements ISlideBackgroundC
     private void handleDiscoveryResponse(Intent data) {
         final Parcelable result = data.getParcelableExtra(RemoteMousifyIntentService.REPLY_EXTRA);
         final String host = Parcels.unwrap(result);
-        if (host.contains("not found")) {
-            discoverButton.setIconEnabled(false);
-            targetIpAddressEditText.setText("");
+        if (Strings.isNullOrEmpty(host)) {
+            discoverButton.setIconColor(Color.parseColor(ICON_ENABLED_COLOR));
+        } else {
+            targetIpAddressEditText.setText(host);
+            // launch connection automatically
+            connectToHost();
         }
-        targetIpAddressEditText.setText(host);
     }
 
     private void handleConnectResponse(Intent data) {
         final Parcelable result = data.getParcelableExtra(RemoteMousifyIntentService.REPLY_EXTRA);
         final String host = Parcels.unwrap(result);
         if (host.contains("Connection failed")) {
-            connectButton.setIconEnabled(false);
+            connectButton.setIconColor(Color.parseColor(ICON_DISABLED_COLOR));
         }
         isConnected = true;
     }
