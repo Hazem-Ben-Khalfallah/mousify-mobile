@@ -10,25 +10,23 @@ import com.blacknebula.mousify.R;
 import com.blacknebula.mousify.fragments.ConnexionSlide;
 import com.blacknebula.mousify.fragments.InstallationSlide;
 import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.inthecheesefactory.thecheeselibrary.fragment.support.v4.app.bus.ActivityResultBus;
 import com.inthecheesefactory.thecheeselibrary.fragment.support.v4.app.bus.ActivityResultEvent;
 
 public class IntroActivity extends AppIntro {
-    private final String bgColor = "#66ce91";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Note here that we DO NOT use setContentView();
-        addSlide(InstallationSlide.newInstance(R.layout.installation_step, Color.parseColor(bgColor)));
-        addSlide(ConnexionSlide.newInstance(R.layout.connexion, Color.parseColor(bgColor)));
+        addSlide(InstallationSlide.newInstance(R.layout.installation_step, R.color.colorPrimary));
+        addSlide(ConnexionSlide.newInstance(R.layout.connexion, R.color.colorPrimary));
 
         // OPTIONAL METHODS
         // Override bar/separator color.
-        setBarColor(Color.parseColor(bgColor));
-        setSeparatorColor(Color.parseColor("#FFFFFF"));
+        setBarColor(getResources().getColor(R.color.colorPrimary));
+        setSeparatorColor(Color.WHITE);
 
         // Hide Skip/Done button.
         showSkipButton(false);

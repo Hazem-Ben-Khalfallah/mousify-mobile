@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -183,10 +183,10 @@ public class ConnexionSlide extends StatedFragment implements ISlideBackgroundCo
     }
 
     @Override
-    public void setBackgroundColor(@ColorInt int backgroundColor) {
+    public void setBackgroundColor(@ColorRes int backgroundColor) {
         // Set the background color of the view within your slide to which the transition should be applied.
         if (mainLayout != null) {
-            mainLayout.setBackgroundColor(backgroundColor);
+            mainLayout.setBackgroundResource(backgroundColor);
         }
     }
 

@@ -3,6 +3,7 @@ package com.blacknebula.mousify.fragments;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.method.LinkMovementMethod;
@@ -86,10 +87,10 @@ public class InstallationSlide extends Fragment implements ISlideBackgroundColor
     }
 
     @Override
-    public void setBackgroundColor(@ColorInt int backgroundColor) {
+    public void setBackgroundColor(@ColorRes int backgroundColor) {
         // Set the background color of the view within your slide to which the transition should be applied.
         if (mainLayout != null) {
-            mainLayout.setBackgroundColor(backgroundColor);
+            mainLayout.setBackgroundResource(backgroundColor);
         }
     }
 
