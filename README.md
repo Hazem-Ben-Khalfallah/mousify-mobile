@@ -1,5 +1,5 @@
 # mousify _mobile_
-This app enables a user to control his PC mouse via his android phone. This repository contains **mobile side** source code.
+This app enables a user to control his PC mouse via an android phone. This repository contains **mobile side** source code.
 
 Server side source code can be found in this [link](https://github.com/Hazem-Ben-Khalfallah/mousify-server)
 
@@ -42,3 +42,11 @@ This will start your server and make him listen to incoming requests.
 ## Known issues
 - Host discovery does not always work from the first try.
 - Connection to PC sometimes fails
+
+## Special Thanks
+- **@johncarl81** for his **Parceler** library
+- **@EsotericSoftware** for **kryonet** TCP/UDP client/server library
+- **@nuuneoi** for **StatedFragment**
+- **@apl-devs** for **AppIntro**
+- **@medyo** for **FancyButtons**
+- **@pinball83** for **Masked-Edittext**
