@@ -1,4 +1,4 @@
-package com.blacknebula.mousify.dto;
+package com.blacknebula.mousify.mobile.dto;
 
 
 public class ConnectionInfo {

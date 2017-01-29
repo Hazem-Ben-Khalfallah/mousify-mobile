@@ -1,4 +1,4 @@
-package com.blacknebula.mousify.event;
+package com.blacknebula.mousify.mobile.event;
 
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;

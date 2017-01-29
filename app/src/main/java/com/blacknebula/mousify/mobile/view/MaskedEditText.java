@@ -1,4 +1,4 @@
-package com.blacknebula.mousify.view;
+package com.blacknebula.mousify.mobile.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -17,7 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.blacknebula.mousify.R;
+import com.blacknebula.mousify.mobile.R;
 
 import java.util.ArrayList;
 import java.util.ListIterator;

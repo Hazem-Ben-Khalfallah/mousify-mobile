@@ -1,4 +1,4 @@
-package com.blacknebula.mousify;
+package com.blacknebula.mousify.mobile;
 
 import org.junit.Test;
 

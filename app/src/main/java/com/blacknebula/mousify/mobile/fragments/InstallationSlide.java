@@ -1,8 +1,7 @@
-package com.blacknebula.mousify.fragments;
+package com.blacknebula.mousify.mobile.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,10 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.blacknebula.mousify.R;
+import com.blacknebula.mousify.mobile.R;
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 
 import butterknife.ButterKnife;

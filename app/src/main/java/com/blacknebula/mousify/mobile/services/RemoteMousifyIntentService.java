@@ -1,18 +1,18 @@
-package com.blacknebula.mousify.services;
+package com.blacknebula.mousify.mobile.services;
 
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Parcelable;
 
-import com.blacknebula.mousify.BuildConfig;
-import com.blacknebula.mousify.MousifyApplication;
-import com.blacknebula.mousify.dto.MotionHistory;
-import com.blacknebula.mousify.event.ClickEvent;
-import com.blacknebula.mousify.event.MotionEvent;
-import com.blacknebula.mousify.event.ScrollEvent;
-import com.blacknebula.mousify.util.Logger;
-import com.blacknebula.mousify.util.ViewUtils;
+import com.blacknebula.mousify.mobile.BuildConfig;
+import com.blacknebula.mousify.mobile.MousifyApplication;
+import com.blacknebula.mousify.mobile.dto.MotionHistory;
+import com.blacknebula.mousify.mobile.event.ClickEvent;
+import com.blacknebula.mousify.mobile.event.MotionEvent;
+import com.blacknebula.mousify.mobile.event.ScrollEvent;
+import com.blacknebula.mousify.mobile.util.Logger;
+import com.blacknebula.mousify.mobile.util.ViewUtils;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 

@@ -1,4 +1,4 @@
-package com.blacknebula.mousify.util;
+package com.blacknebula.mousify.mobile.util;
 
 import android.os.Handler;
 import android.os.Looper;

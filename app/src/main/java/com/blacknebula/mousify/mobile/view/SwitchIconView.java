@@ -1,4 +1,4 @@
-package com.blacknebula.mousify.view;/*
+package com.blacknebula.mousify.mobile.view;/*
  * Copyright (C) 2016 Evgenii Zagumennyi
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,7 +37,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.animation.DecelerateInterpolator;
 
-import com.blacknebula.mousify.R;
+import com.blacknebula.mousify.mobile.R;
 
 public class SwitchIconView extends AppCompatImageView {
     private static final int DEFAULT_ANIMATION_DURATION = 300;

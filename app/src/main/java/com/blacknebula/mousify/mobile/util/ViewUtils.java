@@ -1,4 +1,4 @@
-package com.blacknebula.mousify.util;
+package com.blacknebula.mousify.mobile.util;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -9,7 +9,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
-import com.blacknebula.mousify.R;
+import com.blacknebula.mousify.mobile.R;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

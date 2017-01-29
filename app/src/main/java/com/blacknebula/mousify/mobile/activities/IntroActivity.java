@@ -1,4 +1,4 @@
-package com.blacknebula.mousify.activities;
+package com.blacknebula.mousify.mobile.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import com.blacknebula.mousify.R;
-import com.blacknebula.mousify.fragments.ConnexionSlide;
-import com.blacknebula.mousify.fragments.InstallationSlide;
-import com.blacknebula.mousify.services.RemoteMousifyIntentService;
-import com.blacknebula.mousify.util.ViewUtils;
+import com.blacknebula.mousify.mobile.R;
+import com.blacknebula.mousify.mobile.fragments.ConnexionSlide;
+import com.blacknebula.mousify.mobile.fragments.InstallationSlide;
+import com.blacknebula.mousify.mobile.services.RemoteMousifyIntentService;
+import com.blacknebula.mousify.mobile.util.ViewUtils;
 import com.github.paolorotolo.appintro.AppIntro;
 import com.inthecheesefactory.thecheeselibrary.fragment.support.v4.app.bus.ActivityResultBus;
 import com.inthecheesefactory.thecheeselibrary.fragment.support.v4.app.bus.ActivityResultEvent;

@@ -1,4 +1,4 @@
-package com.blacknebula.mousify.fragments;
+package com.blacknebula.mousify.mobile.fragments;
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -12,11 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.blacknebula.mousify.R;
-import com.blacknebula.mousify.activities.MousePadActivity;
-import com.blacknebula.mousify.services.RemoteMousifyIntentService;
-import com.blacknebula.mousify.util.ViewUtils;
-import com.blacknebula.mousify.view.MaskedEditText;
+import com.blacknebula.mousify.mobile.R;
+import com.blacknebula.mousify.mobile.activities.MousePadActivity;
+import com.blacknebula.mousify.mobile.services.RemoteMousifyIntentService;
+import com.blacknebula.mousify.mobile.util.ViewUtils;
+import com.blacknebula.mousify.mobile.view.MaskedEditText;
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 import com.google.common.base.Strings;
 import com.inthecheesefactory.thecheeselibrary.fragment.support.v4.app.StatedFragment;
@@ -29,8 +29,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import mehdi.sakout.fancybuttons.FancyButton;
 
-import static com.blacknebula.mousify.services.RemoteMousifyIntentService.CONNECT_REQUEST_CODE;
-import static com.blacknebula.mousify.services.RemoteMousifyIntentService.DISCOVER_REQUEST_CODE;
+import static com.blacknebula.mousify.mobile.services.RemoteMousifyIntentService.CONNECT_REQUEST_CODE;
+import static com.blacknebula.mousify.mobile.services.RemoteMousifyIntentService.DISCOVER_REQUEST_CODE;
 
 public class ConnexionSlide extends StatedFragment implements ISlideBackgroundColorHolder {
 

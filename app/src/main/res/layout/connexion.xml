@@ -114,7 +114,7 @@
             android:textColor="@color/colorAccent"
             android:textStyle="bold" />
 
-        <com.blacknebula.mousify.view.MaskedEditText
+        <com.blacknebula.mousify.mobile.view.MaskedEditText
             android:id="@+id/host_ip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

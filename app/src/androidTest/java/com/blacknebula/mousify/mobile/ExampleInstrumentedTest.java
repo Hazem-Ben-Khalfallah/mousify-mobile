@@ -1,4 +1,4 @@
-package com.blacknebula.mousify;
+package com.blacknebula.mousify.mobile;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

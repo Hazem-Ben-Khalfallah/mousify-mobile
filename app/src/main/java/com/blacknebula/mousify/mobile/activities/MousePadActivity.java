@@ -1,20 +1,19 @@
-package com.blacknebula.mousify.activities;
+package com.blacknebula.mousify.mobile.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.blacknebula.mousify.R;
-import com.blacknebula.mousify.dto.MotionHistory;
-import com.blacknebula.mousify.event.ClickEvent;
-import com.blacknebula.mousify.event.MotionEvent;
-import com.blacknebula.mousify.event.ScrollEvent;
-import com.blacknebula.mousify.services.RemoteMousifyIntentService;
+import com.blacknebula.mousify.mobile.R;
+import com.blacknebula.mousify.mobile.dto.MotionHistory;
+import com.blacknebula.mousify.mobile.event.ClickEvent;
+import com.blacknebula.mousify.mobile.event.MotionEvent;
+import com.blacknebula.mousify.mobile.event.ScrollEvent;
+import com.blacknebula.mousify.mobile.services.RemoteMousifyIntentService;
 
 import org.parceler.Parcels;
 
