@@ -1,7 +1,7 @@
 # mousify _mobile_
 This app enables a user to control his PC mouse via an android phone. This repository contains **mobile side** source code.
 
-Server side source code can be found in this [link](https://github.com/Hazem-Ben-Khalfallah/mousify-server)
+Server side source code can be found in this [repository](https://github.com/Hazem-Ben-Khalfallah/mousify-server)
 
 ## Screenshots
 <p>
@@ -13,18 +13,8 @@ Server side source code can be found in this [link](https://github.com/Hazem-Ben
 <img src="./screenshots/mousePad.png" width="250" height="400">
 
 
-## How to install server
-**Mousify _server_** installation is easy and can be done in five quick steps:
-
-1 - Go to [server repository](https://github.com/Hazem-Ben-Khalfallah/mousify-server) and download latest release from [**releases**](./releases) directory
-
-2 - Make sure you have **java 1.8** installed in your environment. If not, follow this [link](https://java.com/en/download/help/download_options.xml) to install it.
-
-3 - Open your console where you have downloaded the jar and run
-
-    java -jar mousify-[SOME-VERSION].jar
-
-This will start your server and make him listen to incoming requests.
+## Server installation
+Follow **Mousify _server_** installation in this  [link](https://github.com/Hazem-Ben-Khalfallah/mousify-server#requirements)
 
 ## How to use the application
 1 - Open **Mousify** app in your Android phone and click on **Discover host** button or insert manually your PC IP address.
